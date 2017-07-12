@@ -116,6 +116,11 @@ arm*-*-*)
 	gdb_sim=../sim/arm/libsim.a
 	;;
 
+apex*-*)
+	# Target: APEX
+	gdb_target_obs="apex-tdep.o"
+	;;
+
 avr-*-*)
 	# Target: AVR
 	gdb_target_obs="avr-tdep.o"
@@ -699,6 +704,7 @@ xtensa*)
 	# Target: Tensilica Xtensa processors
 	gdb_target_obs="xtensa-tdep.o xtensa-config.o solib-svr4.o"
 	;;
+	
 
 esac
 

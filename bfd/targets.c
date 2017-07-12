@@ -587,6 +587,8 @@ extern const bfd_target aout0_be_vec;
 extern const bfd_target aout64_vec;
 extern const bfd_target aout_vec;
 extern const bfd_target aout_adobe_vec;
+extern const bfd_target apex_elf32_def_vec;
+extern const bfd_target apex_elf64_def_vec;
 extern const bfd_target arc_elf32_be_vec;
 extern const bfd_target arc_elf32_le_vec;
 extern const bfd_target arm_aout_be_vec;

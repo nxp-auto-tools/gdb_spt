@@ -246,6 +246,10 @@ case "${targ}" in
     targ_defvec=alpha_ecoff_le_vec
     want64=true
     ;;
+  apex*)
+    targ_defvec=apex_elf64_def_vec
+    want64=true;
+    ;;
   ia64*-*-freebsd* | ia64*-*-netbsd* | ia64*-*-linux-* | ia64*-*-elf* | ia64*-*-kfreebsd*-gnu)
     targ_defvec=ia64_elf64_le_vec
     targ_selvecs="ia64_elf64_be_vec ia64_pei_vec"
@@ -275,7 +279,11 @@ case "${targ}" in
   am33_2.0-*-linux*)
     targ_defvec=am33_elf32_linux_vec
     ;;
-
+  
+  apex*)
+    targ_defvec=apex_elf32_def_vec
+    ;;
+      
   arc*eb-*-elf* | arc*eb-*-linux*)
     targ_defvec=arc_elf32_be_vec
     targ_selvecs=arc_elf32_le_vec
