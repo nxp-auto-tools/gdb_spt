@@ -94,6 +94,7 @@ targ_cpu=`echo $targ | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\1/'`
 case "${targ_cpu}" in
 aarch64*)	 targ_archs="bfd_aarch64_arch bfd_arm_arch";;
 alpha*)		 targ_archs=bfd_alpha_arch ;;
+apex*)       targ_archs=bfd_apex_arch ;;
 am33_2.0*)	 targ_archs=bfd_mn10300_arch ;;
 arc*)		 targ_archs=bfd_arc_arch ;;
 arm*)		 targ_archs=bfd_arm_arch ;;
@@ -246,10 +247,6 @@ case "${targ}" in
     targ_defvec=alpha_ecoff_le_vec
     want64=true
     ;;
-  apex*)
-    targ_defvec=apex_elf64_def_vec
-    want64=true;
-    ;;
   ia64*-*-freebsd* | ia64*-*-netbsd* | ia64*-*-linux-* | ia64*-*-elf* | ia64*-*-kfreebsd*-gnu)
     targ_defvec=ia64_elf64_le_vec
     targ_selvecs="ia64_elf64_be_vec ia64_pei_vec"
@@ -282,6 +279,7 @@ case "${targ}" in
   
   apex*)
     targ_defvec=apex_elf32_def_vec
+    targ_selvecs="apex_elf32_def_vec"
     ;;
       
   arc*eb-*-elf* | arc*eb-*-linux*)

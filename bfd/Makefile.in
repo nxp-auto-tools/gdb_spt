@@ -423,6 +423,7 @@ BFD64_LIBS_CFILES = archive64.c
 ALL_MACHINES = \
 	cpu-aarch64.lo \
 	cpu-alpha.lo \
+	cpu-apex.lo \
 	cpu-arc.lo \
 	cpu-arm.lo \
 	cpu-avr.lo \
@@ -510,6 +511,7 @@ ALL_MACHINES = \
 ALL_MACHINES_CFILES = \
 	cpu-aarch64.c \
 	cpu-alpha.c \
+	cpu-apex.c \
 	cpu-arc.c \
 	cpu-arm.c \
 	cpu-avr.c \
@@ -652,6 +654,7 @@ BFD32_BACKENDS = \
 	elf-vxworks.lo \
 	elf.lo \
 	elf32-am33lin.lo \
+	elf32-apex.lo \
 	elf32-arc.lo \
 	elf32-arm.lo \
 	elf32-avr.lo \
@@ -844,6 +847,7 @@ BFD32_BACKENDS_CFILES = \
 	elf-vxworks.c \
 	elf.c \
 	elf32-am33lin.c \
+	elf32-apex.c \
 	elf32-arc.c \
 	elf32-arm.c \
 	elf32-avr.c \
@@ -1001,6 +1005,7 @@ BFD64_BACKENDS = \
 	elf32-score.lo \
 	elf32-score7.lo \
 	elf64-alpha.lo \
+	elf64-apex.lo \
 	elf64-gen.lo \
 	elf64-hppa.lo \
 	elf64-ia64.lo \
@@ -1040,6 +1045,7 @@ BFD64_BACKENDS_CFILES = \
 	elf32-score.c \
 	elf32-score7.c \
 	elf64-alpha.c \
+	elf64-apex.c \
 	elf64-gen.c \
 	elf64-hppa.c \
 	elf64-ia64-vms.c \
@@ -1354,6 +1360,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/corefile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu-aarch64.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu-alpha.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu-apex.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu-arc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu-arm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu-avr.Plo@am__quote@
@@ -1453,6 +1460,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf32-aarch64.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf32-am33lin.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf32-apex.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf32-arc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf32-arm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf32-avr.Plo@am__quote@
@@ -1523,6 +1531,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf64-aarch64.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf64-alpha.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf64-apex.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf64-gen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf64-hppa.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf64-ia64-vms.Plo@am__quote@

@@ -657,6 +657,7 @@ ALL_64_TARGET_OBS = \
 
 # All other target-dependent objects files (used with --enable-targets=all).
 ALL_TARGET_OBS = \
+	apex-tdep.o \
 	armbsd-tdep.o arm.o arm-linux.o arm-linux-tdep.o \
 	arm-get-next-pcs.o arm-symbian-tdep.o \
 	armnbsd-tdep.o armobsd-tdep.o \
@@ -1669,6 +1670,7 @@ ALLDEPFILES = \
 	alpha-tdep.c alpha-mdebug-tdep.c \
 	alpha-linux-tdep.c \
 	alphabsd-tdep.c alphafbsd-tdep.c alphanbsd-tdep.c alphaobsd-tdep.c \
+	apex_tdep.c \
 	amd64-nat.c amd64-tdep.c \
 	amd64bsd-nat.c amd64fbsd-nat.c amd64fbsd-tdep.c \
 	amd64nbsd-nat.c amd64nbsd-tdep.c \
