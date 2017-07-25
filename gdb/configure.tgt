@@ -119,6 +119,7 @@ arm*-*-*)
 apex*-*)
 	# Target: APEX
 	gdb_target_obs="apex-tdep.o"
+	#gdb_sim=../sim/apex/libsim.a
 	;;
 
 avr-*-*)

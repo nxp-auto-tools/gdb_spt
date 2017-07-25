@@ -164,59 +164,104 @@ apex_return_value (struct gdbarch  *gdbarch,
 static const char *
 apex_register_name (struct gdbarch *gdbarch,
 		    		int regnum){
-  static char *or1k_gdb_reg_names[APEX_TOTAL_REG_NUM] =
+  static char *apex_gdb_reg_names[APEX_TOTAL_REG_NUM] =
     {
-      "r0", //Zero register
+      "apu1_r0", //Zero register
 
 	  /* general purpose registers */
-      "r1",  "r2",  "r3",  "r4",  "r5",  "r6",  "r7",
-      "r8",  "r9",  "r10", "r11", "r12", "r13", "r14", "r15",
-      "r16", "r17", "r18", "r19", "r20", "r21", "r22", "r23",
-      "r24", "r25", "r26", "r27", "r28",
+      "apu1_r1",  "apu1_r2",  "apu1_r3",  "apu1_r4",  "apu1_r5",  "apu1_r6",
+	  "apu1_r7",  "apu1_r8",  "apu1_r9",  "apu1_r10", "apu1_r11", "apu1_r12",
+	  "apu1_r13", "apu1_r14", "apu1_r15", "apu1_r16", "apu1_r17", "apu1_r18",
+	  "apu1_r19", "apu1_r20", "apu1_r21", "apu1_r22", "apu1_r23", "apu1_r24",
+	  "apu1_r25", "apu1_r26", "apu1_r27", "apu1_r28",
+	  "apu1_r29", //Link Register
+	  "apu1_r30", //Vector stack pointer
+	  "apu1_r31", //Scalar Stack Pointer
 
 	  /*Link Register, Vector stack pointer, Scalar Stack Pointer */
-	  "lrg", "vsp", "ssp",
+	  //"lrg", "vsp", "ssp",
 
 	  /* Overflow flag, Program Counter, Loop Flag*/
-	  "ov","pc","lf",
+	  "apu1_ov","apu1_pc","apu1_lf",
 
 	  /*Loop start address*/
-	  "ls0","ls1","ls2",
+	  "apu1_ls0","apu1_ls1","apu1_ls2",
 
 	  /* Loop End address*/
-	  "le0","le1","le2",
+	  "apu1_le0","apu1_le1","apu1_le2",
 
 	  /* Loop count */
-	  "lc0", "lc1","lc2",
+	  "apu1_lc0", "apu1_lc1","apu1_lc2",
 
 	  /* Vector registers */
-	  "v0","v1","v2","v3","v4","v5","v6","v7",
+	  "apu1_v0","apu1_v1","apu1_v2","apu1_v3","apu1_v4","apu1_v5","apu1_v6","apu1_v7",
 
-	  "ovv", //vector overflow flag
+	  "apu1_ovv", //vector overflow flag
 
 	  /* vector conditionals regs */
-	  "vc0","vc1","vc2","vc3",
+	  "apu1_vc0","apu1_vc1","apu1_vc2","apu1_vc3",
 
-	  "vcsptr", // vector conditional stack pointer
+	  "apu1_vcsptr", // vector conditional stack pointer
 
 	  /*Vector conditional stacks*/
-	  "vc0",// not used
-	  "vc1","vc2","vc3","vc4","vc5","vc6","vc7"
+	  "apu1_vcs0",// not used
+	  "apu1_vcs1","apu1_vcs2","apu1_vcs3","apu1_vcs4",
+	  "apu1_vcs5","apu1_vcs6","apu1_vcs7",
+
+
+      "apu2_r0", //Zero register
+
+	  /* general purpose registers */
+      "apu2_r1",  "apu2_r2",  "apu2_r3",  "apu2_r4",  "apu2_r5",  "apu2_r6",
+	  "apu2_r7",  "apu2_r8",  "apu2_r9",  "apu2_r10", "apu2_r11", "apu2_r12",
+	  "apu2_r13", "apu2_r14", "apu2_r15", "apu2_r16", "apu2_r17", "apu2_r18",
+	  "apu2_r19", "apu2_r20", "apu2_r21", "apu2_r22", "apu2_r23", "apu2_r24",
+	  "apu2_r25", "apu2_r26", "apu2_r27", "apu2_r28",
+	  "apu2_r29", //Link Register
+	  "apu2_r30", //Vector stack pointer
+	  "apu2_r31", //Scalar Stack Pointer
+
+	  /*Link Register, Vector stack pointer, Scalar Stack Pointer */
+	  //"lrg", "vsp", "ssp",
+
+	  /* Overflow flag, Program Counter, Loop Flag*/
+	  "apu2_ov","apu2_pc","apu2_lf",
+
+	  /*Loop start address*/
+	  "apu2_ls0","apu2_ls1","apu2_ls2",
+
+	  /* Loop End address*/
+	  "apu2_le0","apu2_le1","apu2_le2",
+
+	  /* Loop count */
+	  "apu2_lc0", "apu2_lc1","apu2_lc2",
+
+	  /* Vector registers */
+	  "apu2_v0","apu2_v1","apu2_v2","apu2_v3","apu2_v4","apu2_v5","apu2_v6","apu2_v7",
+
+	  "apu2_ovv", //vector overflow flag
+
+	  /* vector conditionals regs */
+	  "apu2_vc0","apu2_vc1","apu2_vc2","apu2_vc3",
+
+	  "apu2_vcsptr", // vector conditional stack pointer
+
+	  /*Vector conditional stacks*/
+	  "apu2_vcs0",// not used
+	  "apu2_vcs1","apu2_vcs2","apu2_vcs3","apu2_vcs4",
+	  "apu2_vcs5","apu2_vcs6","apu2_vcs7"
 
     };
 
   /* If we have a target description, use it */
   if (tdesc_has_registers (gdbarch_target_desc (gdbarch)))
-    return tdesc_register_name (gdbarch, regnum);
+	  return tdesc_register_name (gdbarch, regnum);
   else
-    {
-      if (0 <= regnum && regnum < APEX_TOTAL_REG_NUM)
-	{
-	  return or1k_gdb_reg_names[regnum];
-	}
-      else
-	return NULL;
-    }
+	  if (0 <= regnum && regnum < APEX_TOTAL_REG_NUM)
+		  return apex_gdb_reg_names[regnum];
+	  else
+		  return NULL;
+
 
 }	/* APEX_register_name() */
 
@@ -412,6 +457,45 @@ apex_gdbarch_init (struct gdbarch_info  info,
 	struct        gdbarch_tdep  *tdep;
 	const struct  bfd_arch_info *binfo;
 	struct tdesc_arch_data      *tdesc_data = NULL;
+	const struct target_desc *tdesc = info.target_desc;
+
+	gdb_assert (tdesc_has_registers (tdesc));
+
+	if (tdesc_has_registers (tdesc)){
+
+		static const char *const gprs[] = {
+				"r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7",
+				"r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
+				"r16", "r17", "r18", "r19", "r20", "r21", "r22", "r23",
+				"r24", "r25", "r26", "r27", "r28", "r29", "r30", "r31"
+		};
+
+		static const char *const ctlrs[] = {
+				"ov","pc","lf",
+
+					  /*Loop start address*/
+					  "ls0","ls1","ls2",
+
+					  /* Loop End address*/
+					  "le0","le1","le2",
+
+					  /* Loop count */
+					  "lc0", "lc1","lc2",
+
+		};
+
+		const struct tdesc_feature *feature = tdesc_find_feature (tdesc, "org.gnu.gdb.apex.apu1");
+		if (feature == NULL)
+			return NULL;
+		tdesc_data = tdesc_data_alloc ();
+
+		int valid_p = 1;
+
+
+	}
+
+
+
 
 	/* None found, create a new architecture from the information
 	     provided. Can't initialize all the target dependencies until we actually
