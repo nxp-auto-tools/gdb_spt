@@ -91,6 +91,7 @@ BFD64_LIBS_CFILES = archive64.c
 ALL_MACHINES = \
 	cpu-aarch64.lo \
 	cpu-alpha.lo \
+	cpu-apex.lo \
 	cpu-arc.lo \
 	cpu-arm.lo \
 	cpu-avr.lo \
@@ -178,6 +179,7 @@ ALL_MACHINES = \
 ALL_MACHINES_CFILES = \
 	cpu-aarch64.c \
 	cpu-alpha.c \
+	cpu-apex.c \
 	cpu-arc.c \
 	cpu-arm.c \
 	cpu-avr.c \
@@ -319,6 +321,7 @@ BFD32_BACKENDS = \
 	elf-vxworks.lo \
 	elf.lo \
 	elf32-am33lin.lo \
+	elf32-apex.lo \
 	elf32-arc.lo \
 	elf32-arm.lo \
 	elf32-avr.lo \
@@ -511,6 +514,7 @@ BFD32_BACKENDS_CFILES = \
 	elf-vxworks.c \
 	elf.c \
 	elf32-am33lin.c \
+	elf32-apex.c \
 	elf32-arc.c \
 	elf32-arm.c \
 	elf32-avr.c \

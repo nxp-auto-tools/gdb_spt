@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE target SYSTEM "gdb-target.dtd">
+<target version="1.0">
+  <architecture>apex</architecture>
+  <xi:include href="apex_apu1.xml"/>
+  <xi:include href="apex_apu2.xml"/>
+</target>

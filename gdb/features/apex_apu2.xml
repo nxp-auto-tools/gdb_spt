@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<feature name="org.gnu.gdb.apex.apu2">
+<!-- ACP GP registers -->
+  <reg name="apu2_r0"  bitsize="32" type="int32"/> <!--  "wired zero" -->
+  <reg name="apu2_r1"  bitsize="32" type="int32"/>
+  <reg name="apu2_r2"  bitsize="32" type="int32"/>
+  <reg name="apu2_r3"  bitsize="32" type="int32"/>
+  <reg name="apu2_r4"  bitsize="32" type="int32"/>
+  <reg name="apu2_r5"  bitsize="32" type="int32"/>
+  <reg name="apu2_r6"  bitsize="32" type="int32"/>
+  <reg name="apu2_r7"  bitsize="32" type="int32"/>
+  <reg name="apu2_r8"  bitsize="32" type="int32"/>
+  <reg name="apu2_r9"  bitsize="32" type="int32"/>
+  <reg name="apu2_r10" bitsize="32" type="int32"/>
+  <reg name="apu2_r11" bitsize="32" type="int32"/>
+  <reg name="apu2_r12" bitsize="32" type="int32"/>
+  <reg name="apu2_r13" bitsize="32" type="int32"/>
+  <reg name="apu2_r14" bitsize="32" type="int32"/>
+  <reg name="apu2_r15" bitsize="32" type="int32"/>
+  <reg name="apu2_r16" bitsize="32" type="int32"/>
+  <reg name="apu2_r17" bitsize="32" type="int32"/>
+  <reg name="apu2_r18" bitsize="32" type="int32"/>
+  <reg name="apu2_r19" bitsize="32" type="int32"/>
+  <reg name="apu2_r20" bitsize="32" type="int32"/>
+  <reg name="apu2_r21" bitsize="32" type="int32"/>
+  <reg name="apu2_r22" bitsize="32" type="int32"/>
+  <reg name="apu2_r23" bitsize="32" type="int32"/>
+  <reg name="apu2_r24" bitsize="32" type="int32"/>
+  <reg name="apu2_r25" bitsize="32" type="int32"/>
+  <reg name="apu2_r26" bitsize="32" type="int32"/>
+  <reg name="apu2_r27" bitsize="32" type="int32"/>
+  <reg name="apu2_r28" bitsize="32" type="int32"/>
+  <reg name="apu2_r29" bitsize="32" type="int32" />
+  <reg name="apu2_r30" bitsize="32" type="int32"/> <!--"apu2_vec_stk_ptr"-->
+  <reg name="apu2_r31" bitsize="32" type="int32"/> <!--"apu2_scal_stk_ptr"-->
+<!-- ACP control registers -->
+  <reg name="apu2_ov"  bitsize="1"	type="uint8"/> <!--"overflow flag uint1"-->
+  <reg name="apu2_pc"  bitsize="32"	type="int32"/> <!--"programm counter"-->
+  <reg name="apu2_lf"  bitsize="2"	type="uint8"/> <!--"loop flag uint2"-->
+  <reg name="apu2_ls0" bitsize="32"	type="int32"/> <!--"loop start address"-->
+  <reg name="apu2_ls1" bitsize="32"	type="int32"/> 
+  <reg name="apu2_ls2" bitsize="32"	type="int32"/> 
+  <reg name="apu2_le0" bitsize="32"	type="int32"/> <!--"loop end address"-->
+  <reg name="apu2_le1" bitsize="32"	type="int32"/> 
+  <reg name="apu2_le2" bitsize="32"	type="int32"/> 
+  <reg name="apu2_lc0" bitsize="32"	type="int32"/> <!--"loop count"-->
+  <reg name="apu2_lc1" bitsize="32"	type="int32"/>
+  <reg name="apu2_lc2" bitsize="32"	type="int32"/>
+<!-- VCU GP registers -->
+  <reg name="apu2_v0" bitsize="16" type="int16" /> <!--"gp vint16"-->
+  <reg name="apu2_v1" bitsize="16" type="int16" />
+  <reg name="apu2_v2" bitsize="16" type="int16" />
+  <reg name="apu2_v3" bitsize="16" type="int16" />
+  <reg name="apu2_v4" bitsize="16" type="int16" />
+  <reg name="apu2_v5" bitsize="16" type="int16" />
+  <reg name="apu2_v6" bitsize="16" type="int16" />
+  <reg name="apu2_v7" bitsize="16" type="int16" />
+<!-- VCU control registers --> 
+  <reg name="apu2_ovv" 		bitsize="1" type="uint8"/> <!--"overflow flag vuint1"-->
+  <reg name="apu2_vc0"		bitsize="1" type="int8"/> <!--"conditional register vint1"-->
+  <reg name="apu2_vc1" 		bitsize="1" type="int8"/>
+  <reg name="apu2_vc2" 		bitsize="1" type="int8"/>
+  <reg name="apu2_vc3" 		bitsize="1" type="int8"/>
+  <reg name="apu2_vcsptr" 	bitsize="3" type="uint8"/> <!--"vec cond stk ptr uint3"-->
+  <reg name="apu2_vcs0" 	bitsize="1" type="uint8"/> <!--"NOT USED vuint1"-->
+  <reg name="apu2_vcs1" 	bitsize="1" type="uint8"/> <!--"conditional stack vuint1"-->
+  <reg name="apu2_vcs2" 	bitsize="1" type="uint8"/>
+  <reg name="apu2_vcs3" 	bitsize="1" type="uint8"/>
+  <reg name="apu2_vcs4" 	bitsize="1" type="uint8"/>
+  <reg name="apu2_vcs5" 	bitsize="1" type="uint8"/>
+  <reg name="apu2_vcs6" 	bitsize="1" type="uint8"/>
+  <reg name="apu2_vcs7" 	bitsize="1" type="uint8"/>
+     
+</feature>
