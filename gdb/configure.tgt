@@ -705,7 +705,6 @@ xtensa*)
 	# Target: Tensilica Xtensa processors
 	gdb_target_obs="xtensa-tdep.o xtensa-config.o solib-svr4.o"
 	;;
-	
 
 esac
 
