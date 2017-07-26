@@ -571,6 +571,7 @@ DESCRIPTION
 
 extern const bfd_arch_info_type bfd_aarch64_arch;
 extern const bfd_arch_info_type bfd_alpha_arch;
+extern const bfd_arch_info_type bfd_apex_arch;
 extern const bfd_arch_info_type bfd_arc_arch;
 extern const bfd_arch_info_type bfd_arm_arch;
 extern const bfd_arch_info_type bfd_avr_arch;
@@ -663,6 +664,7 @@ static const bfd_arch_info_type * const bfd_archures_list[] =
 #else
     &bfd_aarch64_arch,
     &bfd_alpha_arch,
+    &bfd_apex_arch,
     &bfd_arc_arch,
     &bfd_arm_arch,
     &bfd_avr_arch,

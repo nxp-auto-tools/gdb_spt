@@ -397,6 +397,7 @@ do
     aout64_vec)			 tb="$tb demo64.lo aout64.lo"; target_size=64 ;;
     aout_vec)			 tb="$tb host-aout.lo aout32.lo" ;;
     aout_adobe_vec)		 tb="$tb aout-adobe.lo aout32.lo" ;;
+    apex_elf32_def_vec)		 tb="$tb elf32-apex.lo elf32.lo $elf" ;;
     arc_elf32_be_vec)		 tb="$tb elf32-arc.lo elf32.lo $elf" ;;
     arc_elf32_le_vec)		 tb="$tb elf32-arc.lo elf32.lo $elf" ;;
     arm_aout_be_vec)		 tb="$tb aout-arm.lo aout32.lo" ;;
