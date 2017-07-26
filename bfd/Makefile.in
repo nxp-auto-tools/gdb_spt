@@ -1005,7 +1005,6 @@ BFD64_BACKENDS = \
 	elf32-score.lo \
 	elf32-score7.lo \
 	elf64-alpha.lo \
-	elf64-apex.lo \
 	elf64-gen.lo \
 	elf64-hppa.lo \
 	elf64-ia64.lo \
@@ -1045,7 +1044,6 @@ BFD64_BACKENDS_CFILES = \
 	elf32-score.c \
 	elf32-score7.c \
 	elf64-alpha.c \
-	elf64-apex.c \
 	elf64-gen.c \
 	elf64-hppa.c \
 	elf64-ia64-vms.c \
