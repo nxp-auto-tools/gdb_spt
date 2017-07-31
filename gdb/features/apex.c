@@ -1,5 +1,5 @@
 /* THIS FILE IS GENERATED.  -*- buffer-read-only: t -*- vi:set ro:
-  Original: aper.rml */
+  Original: apex.rml */
 
 #include "defs.h"
 #include "osabi.h"
@@ -7,7 +7,7 @@
 
 struct target_desc *tdesc_apex;
 static void
-initialize_tdesc_apex_apu1 (void)
+initialize_tdesc_apex_apu (void)
 {
   struct target_desc *result = allocate_target_description ();
   struct tdesc_feature *feature;
@@ -20,7 +20,7 @@ initialize_tdesc_apex_apu1 (void)
 
   set_tdesc_architecture (result, bfd_scan_arch ("apex"));
 
-  feature = tdesc_create_feature (result, "org.gnu.gdb.apex.apu1");
+  feature = tdesc_create_feature (result, "org.gnu.gdb.apex.apu");
 
   //TODO: here was some flags from aarch64.c
   //need to adjust arch description with flags and vectors

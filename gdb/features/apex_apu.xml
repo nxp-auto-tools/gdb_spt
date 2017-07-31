@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<feature name="org.gnu.gdb.apex.apu1">
+<feature name="org.gnu.gdb.apex.apu">
 <!-- ACP GP registers -->
   <reg name="r0"  bitsize="32" type="uint32" /> <!--  "wired zero" -->
   <reg name="r1"  bitsize="32" type="uint32"/>

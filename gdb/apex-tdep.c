@@ -196,7 +196,7 @@ apex_gdbarch_init (struct gdbarch_info info,
 
 	struct tdesc_arch_data *tdesc_data = NULL;
 	const struct target_desc *tdesc=info.target_desc;
-	const struct tdesc_feature *feature_apu1;
+	const struct tdesc_feature *feature_apu;
 
 	int i;
 	int valid_p = 1;
@@ -210,10 +210,10 @@ apex_gdbarch_init (struct gdbarch_info info,
 	}
 	gdb_assert (tdesc);
 
-	feature_apu1 = tdesc_find_feature (tdesc, "org.gnu.gdb.apex.apu1");
+	feature_apu = tdesc_find_feature (tdesc, "org.gnu.gdb.apex.apu");
 
-	if (feature_apu1 == NULL){
-		error ("apex_gdbarch_init: no feature org.gnu.gdb.apex.apu1");
+	if (feature_apu == NULL){
+		error ("apex_gdbarch_init: no feature org.gnu.gdb.apex.apu");
 		return NULL;
 	}
 
@@ -222,28 +222,28 @@ apex_gdbarch_init (struct gdbarch_info info,
 
 	for (i = 0; i < ARRAY_SIZE (acp_gp_regs); i++){
 		valid_p &=
-		tdesc_numbered_register (feature_apu1, tdesc_data, APEX_ACP_REG_GP + i,
+		tdesc_numbered_register (feature_apu, tdesc_data, APEX_ACP_REG_GP + i,
 		acp_gp_regs[i]);
 	}
 	regs_num += i;
 
 	for (i = 0; i < ARRAY_SIZE (acp_ctl_regs); i++){
 		valid_p &=
-		tdesc_numbered_register (feature_apu1, tdesc_data, APEX_ACP_REG_CTL + i,
+		tdesc_numbered_register (feature_apu, tdesc_data, APEX_ACP_REG_CTL + i,
 		acp_ctl_regs[i]);
 	}
 	regs_num += i;
 
 	for (i = 0; i < ARRAY_SIZE (vcu_gp_regs); i++){
 		valid_p &=
-		tdesc_numbered_register (feature_apu1, tdesc_data, APEX_VCU_REG_GP + i,
+		tdesc_numbered_register (feature_apu, tdesc_data, APEX_VCU_REG_GP + i,
 		vcu_gp_regs[i]);
 	}
 	regs_num += i;
 
 	for (i = 0; i < ARRAY_SIZE (vcu_ctl_regs); i++){
 		valid_p &=
-		tdesc_numbered_register (feature_apu1, tdesc_data, APEX_VCU_REG_CTL + i,
+		tdesc_numbered_register (feature_apu, tdesc_data, APEX_VCU_REG_CTL + i,
 		vcu_ctl_regs[i]);
 	}
 
@@ -350,7 +350,7 @@ _initialize_apex_tdep (void)
 {
 	  gdbarch_register (bfd_arch_apex, apex_gdbarch_init, apex_dump_tdep);
 
-	  initialize_tdesc_apex_apu1();
+	  initialize_tdesc_apex_apu();
 	  /* Tell remote stub that we support XML target description.  */
 	  register_remote_support_xml ("apex");
 
