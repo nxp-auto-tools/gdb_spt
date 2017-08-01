@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<feature name="org.gnu.gdb.apex.apu">
+<!-- ACP GP registers -->
+  <reg name="r0"  bitsize="32" type="uint32" /> <!--  "wired zero" -->
+  <reg name="r1"  bitsize="32" type="uint32"/>
+  <reg name="r2"  bitsize="32" type="uint32"/>
+  <reg name="r3"  bitsize="32" type="uint32"/>
+  <reg name="r4"  bitsize="32" type="uint32"/>
+  <reg name="r5"  bitsize="32" type="uint32"/>
+  <reg name="r6"  bitsize="32" type="uint32"/>
+  <reg name="r7"  bitsize="32" type="uint32"/>
+  <reg name="r8"  bitsize="32" type="uint32"/>
+  <reg name="r9"  bitsize="32" type="uint32"/>
+  <reg name="r10" bitsize="32" type="uint32"/>
+  <reg name="r11" bitsize="32" type="uint32"/>
+  <reg name="r12" bitsize="32" type="uint32"/>
+  <reg name="r13" bitsize="32" type="uint32"/>
+  <reg name="r14" bitsize="32" type="uint32"/>
+  <reg name="r15" bitsize="32" type="uint32"/>
+  <reg name="r16" bitsize="32" type="uint32"/>
+  <reg name="r17" bitsize="32" type="uint32"/>
+  <reg name="r18" bitsize="32" type="uint32"/>
+  <reg name="r19" bitsize="32" type="uint32"/>
+  <reg name="r20" bitsize="32" type="uint32"/>
+  <reg name="r21" bitsize="32" type="uint32"/>
+  <reg name="r22" bitsize="32" type="uint32"/>
+  <reg name="r23" bitsize="32" type="uint32"/>
+  <reg name="r24" bitsize="32" type="uint32"/>
+  <reg name="r25" bitsize="32" type="uint32"/>
+  <reg name="r26" bitsize="32" type="uint32"/>
+  <reg name="r27" bitsize="32" type="uint32"/>
+  <reg name="r28" bitsize="32" type="uint32"/>
+  <reg name="r29" bitsize="32" type="uint32" />
+  <reg name="r30" bitsize="32" type="uint32"/> <!--"vec_stk_ptr"-->
+  <reg name="r31" bitsize="32" type="uint32"/> <!--"scal_stk_ptr"-->
+<!-- ACP control registers -->
+  <reg name="ov"  bitsize="32"	type="uint32"/> <!--"overflow flag uint1 "-->
+  <reg name="pc"  bitsize="32"	type="uint32"/> <!--"programm counter"-->
+  <reg name="lf"  bitsize="32"	type="uint32"/> <!--"loop flag uint2"-->
+  <reg name="ls0" bitsize="32"	type="uint32"/> <!--"loop start address"-->
+  <reg name="ls1" bitsize="32"	type="uint32"/> 
+  <reg name="ls2" bitsize="32"	type="uint32"/> 
+  <reg name="le0" bitsize="32"	type="uint32"/> <!--"loop end address"-->
+  <reg name="le1" bitsize="32"	type="uint32"/> 
+  <reg name="le2" bitsize="32"	type="uint32"/> 
+  <reg name="lc0" bitsize="32"	type="uint32"/> <!--"loop count"-->
+  <reg name="lc1" bitsize="32"	type="uint32"/>
+  <reg name="lc2" bitsize="32"	type="uint32"/>
+<!-- VCU GP registers -->
+  <reg name="v0" bitsize="32" type="uint32" /> <!--"gp vuint32"-->
+  <reg name="v1" bitsize="32" type="uint32" />
+  <reg name="v2" bitsize="32" type="uint32" />
+  <reg name="v3" bitsize="32" type="uint32" />
+  <reg name="v4" bitsize="32" type="uint32" />
+  <reg name="v5" bitsize="32" type="uint32" />
+  <reg name="v6" bitsize="32" type="uint32" />
+  <reg name="v7" bitsize="32" type="uint32" />
+<!-- VCU control registers --> 
+  <reg name="ovv" 		bitsize="32" type="uint32"/> <!--"overflow flag vuint1"-->
+  <reg name="vc0"		bitsize="32" type="uint32"/> <!--"conditional register vint1"-->
+  <reg name="vc1" 		bitsize="32" type="uint32"/>
+  <reg name="vc2" 		bitsize="32" type="uint32"/>
+  <reg name="vc3" 		bitsize="32" type="uint32"/>
+  <reg name="vcsptr" 	bitsize="32" type="uint32"/> <!--"vec cond stk ptr uint3"-->
+  <reg name="vcs0" 		bitsize="32" type="uint32"/> <!--"NOT USED vuint1"-->
+  <reg name="vcs1" 		bitsize="32" type="uint32"/> <!--"conditional stack vuint1"-->
+  <reg name="vcs2" 		bitsize="32" type="uint32"/>
+  <reg name="vcs3" 		bitsize="32" type="uint32"/>
+  <reg name="vcs4" 		bitsize="32" type="uint32"/>
+  <reg name="vcs5" 		bitsize="32" type="uint32"/>
+  <reg name="vcs6" 		bitsize="32" type="uint32"/>
+  <reg name="vcs7" 		bitsize="32" type="uint32"/>
+     
+</feature>

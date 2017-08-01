@@ -81,8 +81,16 @@
 
 #define APEX_MATCHPOINTS_NUM	4	//number of hardware breakpoints
 
-#define APEX_TOTAL_REG_NUM_PER_APU 67
+#define APEX_TOTAL_REG_NUM_PER_APU 66
 #define APEX_TOTAL_APU_NUM	2
 #define APEX_TOTAL_REG_NUM APEX_TOTAL_REG_NUM_PER_APU*APEX_TOTAL_APU_NUM
+
+
+/***** TRUE OFFSETS ******/
+
+#define APEX_ACP_REG_GP 	0
+#define APEX_ACP_REG_CTL 	32
+#define APEX_VCU_REG_GP		44
+#define APEX_VCU_REG_CTL	52
 
 #endif
