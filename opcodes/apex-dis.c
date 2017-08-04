@@ -2,17 +2,8 @@
  * Copyrights
  */
 
-#include "sysdep.h"
-#include <stdio.h>
-#include "ansidecl.h"
+#include "opcode/apex.h"
 #include "dis-asm.h"
-#include "bfd.h"
-#include "symcat.h"
-#include "libiberty.h"
-#include "apex-desc.h"
-#include "apex-opc.h"
-#include "opintl.h"
-
 
 
 int

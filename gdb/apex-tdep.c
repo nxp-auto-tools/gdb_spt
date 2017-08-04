@@ -297,8 +297,11 @@ apex_gdbarch_init (struct gdbarch_info info,
 	set_gdbarch_skip_prologue         (gdbarch, apex_skip_prologue);
 	set_gdbarch_inner_than            (gdbarch, core_addr_lessthan);
 
-	//Associates registers description with arch
+	/*Associates registers description with arch*/
 	tdesc_use_registers (gdbarch, tdesc, tdesc_data);
+
+	/* instruction set printer */
+	set_gdbarch_print_insn (gdbarch, print_insn_apex);
 
 
 	return gdbarch;
