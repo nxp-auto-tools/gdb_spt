@@ -35,7 +35,7 @@
 
 /* ACP registers offsets */
 #define APEX_ACP_REG_ZERO	0
-#define APEX_ACP_REG_GP		1	//	general purposes registers offset begin
+//#define APEX_ACP_REG_GP		1	//	general purposes registers offset begin
 #define APEX_ACP_REG_GP_NUM 28	//	general purposes registers offset and total number
 #define APEX_ACP_REG_LINK	29
 #define APEX_ACP_REG_VSP	30	//vector stack pointer

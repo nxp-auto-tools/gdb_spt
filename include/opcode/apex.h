@@ -29,8 +29,8 @@ typedef struct apex_opc_info_t
 #define OPERAND_I1				0x01FFE000U //[13:24] bits
 #define OPERAND_I2				0x00001FFFU	// [0:12] bits
 
-#define SHIFT_LEFT  (v, p) ((v)<<(p)) //v - value; p - number of positions to shift
-#define SHIFT_RIGHT (v, p) ((v)>>(p))
+#define SHIFT_LEFT(v, p) ((v)<<(p)) //v - value; p - number of positions to shift
+#define SHIFT_RIGHT(v, p) ((v)>>(p))
 
 
 

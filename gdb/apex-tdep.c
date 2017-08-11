@@ -162,11 +162,7 @@ static CORE_ADDR
 apex_skip_prologue (struct gdbarch *gdbarch,
 		    CORE_ADDR       pc)
 {
-	//TODO: edit this function
-  CORE_ADDR     start_pc;
-  CORE_ADDR     addr;
-
-  addr=pc;
+	//TODO:
   return pc;
 }
 
