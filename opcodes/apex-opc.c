@@ -402,5 +402,5 @@ const apex_opc_info_t apex_APC_32b_opc_info[] =
 	{      "vsle", 0, 0x00000000U, 0x00000000U},
 			/*Scalar-Vector combined instructions*/
 	//TODO:
-	{ NULL, 0, 0, 0, 0}
+	{ NULL, 0, 0, 0}
 };
