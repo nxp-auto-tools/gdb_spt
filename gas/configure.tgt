@@ -49,7 +49,6 @@ case ${cpu} in
   aarch64)		cpu_type=aarch64 endian=little ;;
   aarch64_be)		cpu_type=aarch64 endian=big ;;
   alpha*)		cpu_type=alpha ;;
-  apex*)		cpu_type=apex ;;
   am33_2.0)		cpu_type=mn10300 endian=little ;;
   arc*eb)		cpu_type=arc endian=big ;;
   arm*be|arm*b)		cpu_type=arm endian=big ;;
@@ -129,7 +128,7 @@ case ${generic_target} in
   alpha-*-linux*ecoff*)			fmt=ecoff ;;
   alpha-*-linux-*)			fmt=elf em=linux ;;
   alpha-*-netbsd* | alpha-*-openbsd*)	fmt=elf em=nbsd ;;
-  apex*)					fmt=elf ;;
+
   arc-*-elf*)				fmt=elf ;;
   arc*-*-linux*)			fmt=elf bfd_gas=yes ;;
 
