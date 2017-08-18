@@ -151,6 +151,18 @@ apex_breakpoint_from_pc (struct gdbarch *gdbarch,
 }
 
 
+/* Map a DWARF register REGNUM onto the appropriate GDB register
+   number.  */
+
+static int
+apex_dwarf_reg_to_regnum (struct gdbarch *gdbarch, int reg)
+{
+  /* Core integer regs.  */
+  if (reg >= 19 && reg <= 50)
+    return APEX_R0_REGNUM + reg - 19;
+
+  return -1;
+}
 
 
 static struct gdbarch *
@@ -257,6 +269,8 @@ apex_gdbarch_init (struct gdbarch_info info,
   /* Register architecture */
   set_gdbarch_num_regs              (gdbarch, APEX_TOTAL_REG_NUM_PER_APU);
 
+    /* Internal <-> external register number maps.  */
+  set_gdbarch_dwarf2_reg_to_regnum (gdbarch, apex_dwarf_reg_to_regnum);
 
   /* Functions to supply register information */
   set_gdbarch_register_name         (gdbarch, apex_register_name);
@@ -329,3 +343,4 @@ _initialize_apex_tdep (void)
 
 
 } /* _initialize_apex_tdep() */
+
