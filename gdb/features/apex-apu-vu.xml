@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE target SYSTEM "gdb-target.dtd">
-<target>
-  <feature name="org.gnu.gdb.apex.apu.vu">
+<feature name="org.gnu.gdb.apex.apu.vu">
     
-  </feature>
-</target>
+</feature>
