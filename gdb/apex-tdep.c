@@ -151,6 +151,26 @@ apex_breakpoint_from_pc (struct gdbarch *gdbarch,
 }
 
 
+/* Implement the "unwind_pc" gdbarch method.  */
+
+static CORE_ADDR
+apex_unwind_pc (struct gdbarch *gdbarch, struct frame_info *this_frame)
+{
+  CORE_ADDR pc
+    = frame_unwind_register_unsigned (this_frame, APEX_PC_REGNUM);
+
+  return pc;
+}
+
+/* Implement the "unwind_sp" gdbarch method.  */
+
+static CORE_ADDR
+apex_unwind_sp (struct gdbarch *gdbarch, struct frame_info *this_frame)
+{
+  return frame_unwind_register_unsigned (this_frame, APEX_SP_REGNUM);
+}
+
+
 /* Map a DWARF register REGNUM onto the appropriate GDB register
    number.  */
 
@@ -277,6 +297,10 @@ apex_gdbarch_init (struct gdbarch_info info,
   set_gdbarch_register_type         (gdbarch, apex_register_type);
   set_gdbarch_print_registers_info  (gdbarch, apex_registers_info);
 
+  /* Frame handling.  */
+  set_gdbarch_unwind_pc (gdbarch, apex_unwind_pc);
+  set_gdbarch_unwind_sp (gdbarch, apex_unwind_sp);  
+  
   /* Functions to analyse frames */
   set_gdbarch_skip_prologue         (gdbarch, apex_skip_prologue);
   set_gdbarch_inner_than            (gdbarch, core_addr_lessthan);
