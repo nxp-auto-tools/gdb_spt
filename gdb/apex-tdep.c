@@ -73,26 +73,12 @@ apex_return_value (struct gdbarch  *gdbarch,
   return RETURN_VALUE_ABI_RETURNS_ADDRESS;
 }
 
-static const char *const acp_gp_regs[] = {
-	"r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7",
-	"r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
-	"r16", "r17", "r18", "r19", "r20", "r21", "r22", "r23",
-	"r24", "r25", "r26", "r27", "r28", "r29", "r30", "r31"
-};
-
-static const char *const acp_ctl_regs[] = {
-	/* Overflow flag, Program Counter, Loop Flag*/
-	"ov","pc","lf",
-
-	/*Loop start address*/
-	"ls0","ls1","ls2",
-
-	/* Loop End address*/
-	"le0","le1","le2",
-
-	/* Loop counters */
-	"lc0", "lc1","lc2",
-
+static const char *const acp_register_names[] = {
+  "r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7",
+  "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
+  "r16", "r17", "r18", "r19", "r20", "r21", "r22", "r23",
+  "r24", "r25", "r26", "r27", "r28", "r29", "r30", "r31",
+  "ov","pc"
 };
 
 static const char *const vcu_gp_regs[] = {
@@ -110,28 +96,13 @@ static const char *
 apex_register_name (struct gdbarch *gdbarch,
 		    		int regnum){
 
-	/* If we have a target description, use it */
-/*	if (tdesc_has_registers (gdbarch_target_desc (gdbarch)))
-	  	  return tdesc_register_name (gdbarch, regnum);
-  	else
-	 ...
-	return NULL;	*/
+  if (regnum >= ARRAY_SIZE (acp_register_names))
+    /* These registers are only supported on targets which supply
+       an XML description.  */
+    return "";
 
-	if(regnum>=APEX_ACP_REG_GP && regnum<APEX_ACP_REG_CTL)
-		return acp_gp_regs[regnum-APEX_ACP_REG_GP];
-
-	else if (regnum>=APEX_ACP_REG_CTL && regnum<APEX_VCU_REG_GP)
-		return acp_ctl_regs[regnum-APEX_ACP_REG_CTL];
-
-	else if (regnum>=APEX_VCU_REG_GP && regnum<APEX_VCU_REG_CTL)
-		return vcu_gp_regs[regnum-APEX_VCU_REG_GP];
-
-	else if (regnum>=APEX_VCU_REG_CTL && regnum < APEX_TOTAL_REG_NUM_PER_APU)
-		return vcu_ctl_regs[regnum-APEX_VCU_REG_CTL];
-	else{
-		error("apex_register_name: regnum param overrange: %d",regnum);
-		return NULL;
-	}
+  return acp_register_names[regnum];
+  
 }
 
 static struct type *
@@ -186,121 +157,124 @@ static struct gdbarch *
 apex_gdbarch_init (struct gdbarch_info info,
 		   struct gdbarch_list *arches)
 {
-	struct gdbarch       *gdbarch;
-	struct gdbarch_tdep  *tdep;
+  static const char *const apex_sp_names[] = { "r31", "sp", NULL };
+  static const char *const apex_vsp_names[] = { "r30", "vsp", NULL };
+  static const char *const apex_lr_names[] = { "r29", "lr", NULL };
+      
+  struct gdbarch       *gdbarch;
+  struct gdbarch_tdep  *tdep;
+
+  struct tdesc_arch_data *tdesc_data = NULL;
+  const struct target_desc *tdesc=info.target_desc;
+  const struct tdesc_feature *feature;
+
+  int i;
+  int valid_p = 1;
+  unsigned int regs_num = 0;
 
 
-	struct tdesc_arch_data *tdesc_data = NULL;
-	const struct target_desc *tdesc=info.target_desc;
-	const struct tdesc_feature *feature_apu;
+  /* Ensure we always have a target descriptor.  */
+  if (!tdesc_has_registers (tdesc)){
+    //warning("tdesc has NO registers");
+    tdesc = tdesc_apex;
+  }
+  gdb_assert (tdesc);
 
-	int i;
-	int valid_p = 1;
-	unsigned int regs_num = 0;
+  
+  feature = tdesc_find_feature (tdesc, "org.gnu.gdb.apex.apu.acp");
 
+  if (feature == NULL){
+    error ("apex_gdbarch_init: no feature org.gnu.gdb.apex.apu.acp");
+    return NULL;
+  }
 
-	  /* Ensure we always have a target descriptor.  */
-	if (!tdesc_has_registers (tdesc)){
-		//warning("tdesc has NO registers");
-		tdesc = tdesc_apex;
-	}
-	gdb_assert (tdesc);
-
-	feature_apu = tdesc_find_feature (tdesc, "org.gnu.gdb.apex.apu");
-
-	if (feature_apu == NULL){
-		error ("apex_gdbarch_init: no feature org.gnu.gdb.apex.apu");
-		return NULL;
-	}
-
-	tdesc_data = tdesc_data_alloc ();
+  tdesc_data = tdesc_data_alloc ();
 
 
-	for (i = 0; i < ARRAY_SIZE (acp_gp_regs); i++){
-		valid_p &=
-		tdesc_numbered_register (feature_apu, tdesc_data, APEX_ACP_REG_GP + i,
-		acp_gp_regs[i]);
-	}
-	regs_num += i;
+  for (i = 0; i < APEX_LR_REGNUM; i++){
+    valid_p &= tdesc_numbered_register (feature, tdesc_data, i,
+                                        acp_register_names[i]);
+  }
 
-	for (i = 0; i < ARRAY_SIZE (acp_ctl_regs); i++){
-		valid_p &=
-		tdesc_numbered_register (feature_apu, tdesc_data, APEX_ACP_REG_CTL + i,
-		acp_ctl_regs[i]);
-	}
-	regs_num += i;
+  valid_p &= tdesc_numbered_register_choices (feature, tdesc_data, APEX_SP_REGNUM,
+                                              apex_sp_names);
+  i++;
 
-	for (i = 0; i < ARRAY_SIZE (vcu_gp_regs); i++){
-		valid_p &=
-		tdesc_numbered_register (feature_apu, tdesc_data, APEX_VCU_REG_GP + i,
-		vcu_gp_regs[i]);
-	}
-	regs_num += i;
-
-	for (i = 0; i < ARRAY_SIZE (vcu_ctl_regs); i++){
-		valid_p &=
-		tdesc_numbered_register (feature_apu, tdesc_data, APEX_VCU_REG_CTL + i,
-		vcu_ctl_regs[i]);
-	}
-
-	regs_num += i;
-
-	 /*
-	  * Comparing computed number of registers with predefined
-	  */
-	if (regs_num!=APEX_TOTAL_REG_NUM_PER_APU)
-		 warning("Attention:regs_num!=APEX_TOTAL_REG_NUM_PER_APU1");
-
-	if (!valid_p)
-	{
-		warning("Validation not passed, calling tdesc_data_cleanup");
-	    tdesc_data_cleanup (tdesc_data);
-	    return NULL;
-	}
-
-	//TODO: fill the struct "tdep" with appropriate params
-	//gdbarch = gdbarch_alloc (&info, tdep);
-	gdbarch = gdbarch_alloc (&info, NULL);
+  valid_p &= tdesc_numbered_register_choices (feature, tdesc_data, APEX_VSP_REGNUM,
+                                              apex_vsp_names);
+  i++;
+  
+  valid_p &= tdesc_numbered_register_choices (feature, tdesc_data, APEX_LR_REGNUM,
+                                              apex_lr_names);
+  i++;
 
 
+  if (!valid_p)
+    {
+      tdesc_data_cleanup (tdesc_data);
+      return NULL;
+    }
+  else
+    {
+      regs_num += i;
+    }  
 
-	/* Target data types.  */
-	set_gdbarch_short_bit             (gdbarch, 16);
-	set_gdbarch_int_bit               (gdbarch, 32);
-	set_gdbarch_long_bit              (gdbarch, 32);
-	set_gdbarch_long_long_bit         (gdbarch, 64);
+    
+  feature = tdesc_find_feature (tdesc, "org.gnu.gdb.apex.apu.vu");    
+    
+  if (feature != NULL)
+    {
+      //TODO: check VU registers
+      
+      
+      if (!valid_p)
+      {
+        tdesc_data_cleanup (tdesc_data);
+        return NULL;
+      }
+    }
 
-	  //TODO: add necessary target date types
-	 // Remember that address ranges different for ACU(24bits) and VU(16bit)
+
+  tdep = XCNEW (struct gdbarch_tdep);
+  gdbarch = gdbarch_alloc (&info, tdep);
 
 
 
-	   /* Information about the target architecture */
-	set_gdbarch_return_value          (gdbarch, apex_return_value);
-	set_gdbarch_breakpoint_from_pc    (gdbarch, apex_breakpoint_from_pc);
-	set_gdbarch_print_insn 	       (gdbarch, print_insn_apex);
-
-	  /* Register architecture */
-	set_gdbarch_num_regs              (gdbarch, APEX_TOTAL_REG_NUM_PER_APU);
+  /* Target data types.  */
+  set_gdbarch_short_bit             (gdbarch, 16);
+  set_gdbarch_int_bit               (gdbarch, 32);
+  set_gdbarch_long_bit              (gdbarch, 32);
+  set_gdbarch_long_long_bit         (gdbarch, 64);
 
 
-	  /* Functions to supply register information */
-	set_gdbarch_register_name         (gdbarch, apex_register_name);
-	set_gdbarch_register_type         (gdbarch, apex_register_type);
-	set_gdbarch_print_registers_info  (gdbarch, apex_registers_info);
+  set_gdbarch_pc_regnum (gdbarch, APEX_PC_REGNUM);
+  set_gdbarch_sp_regnum (gdbarch, APEX_SP_REGNUM);
 
-	  /* Functions to analyse frames */
-	set_gdbarch_skip_prologue         (gdbarch, apex_skip_prologue);
-	set_gdbarch_inner_than            (gdbarch, core_addr_lessthan);
+    /* Information about the target architecture */
+  set_gdbarch_return_value          (gdbarch, apex_return_value);
+  set_gdbarch_breakpoint_from_pc    (gdbarch, apex_breakpoint_from_pc);
 
-	/*Associates registers description with arch*/
-	tdesc_use_registers (gdbarch, tdesc, tdesc_data);
-
-	/* instruction set printer */
-	set_gdbarch_print_insn (gdbarch, print_insn_apex);
+  /* Register architecture */
+  set_gdbarch_num_regs              (gdbarch, APEX_TOTAL_REG_NUM_PER_APU);
 
 
-	return gdbarch;
+  /* Functions to supply register information */
+  set_gdbarch_register_name         (gdbarch, apex_register_name);
+  set_gdbarch_register_type         (gdbarch, apex_register_type);
+  set_gdbarch_print_registers_info  (gdbarch, apex_registers_info);
+
+  /* Functions to analyse frames */
+  set_gdbarch_skip_prologue         (gdbarch, apex_skip_prologue);
+  set_gdbarch_inner_than            (gdbarch, core_addr_lessthan);
+
+  /*Associates registers description with arch*/
+  tdesc_use_registers (gdbarch, tdesc, tdesc_data);
+
+  /* instruction set printer */
+  set_gdbarch_print_insn (gdbarch, print_insn_apex);
+
+
+  return gdbarch;
 } /* apex_gdbarch_init() */
 
 
