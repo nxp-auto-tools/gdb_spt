@@ -258,16 +258,16 @@ apex_gdbarch_init (struct gdbarch_info info,
   set_gdbarch_long_bit              (gdbarch, 32);
   set_gdbarch_long_long_bit         (gdbarch, 64);
 
-
+  /* Register architecture */
   set_gdbarch_pc_regnum (gdbarch, APEX_PC_REGNUM);
   set_gdbarch_sp_regnum (gdbarch, APEX_SP_REGNUM);
+  set_gdbarch_num_regs              (gdbarch, regs_num);
 
     /* Information about the target architecture */
   set_gdbarch_return_value          (gdbarch, apex_return_value);
   set_gdbarch_breakpoint_from_pc    (gdbarch, apex_breakpoint_from_pc);
 
-  /* Register architecture */
-  set_gdbarch_num_regs              (gdbarch, APEX_TOTAL_REG_NUM_PER_APU);
+
 
     /* Internal <-> external register number maps.  */
   set_gdbarch_dwarf2_reg_to_regnum (gdbarch, apex_dwarf_reg_to_regnum);

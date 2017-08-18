@@ -23,8 +23,8 @@ enum {
   APEX_PC_REGNUM,
   
   /* vector unit registers */
-  APEX_VU_REGNUM,
-  LAST_APEX_VU_REGNUM = APEX_VU_REGNUM + (32/*cu*/*22/*per each cu*/),
+  //APEX_VU_REGNUM,
+  //LAST_APEX_VU_REGNUM = APEX_VU_REGNUM + (32/*cu*/*22/*per each cu*/),
   
   APEX_NUM_REGS,
 };
@@ -110,10 +110,6 @@ enum {
 
 
 #define APEX_MATCHPOINTS_NUM	4	//number of hardware breakpoints
-
-#define APEX_TOTAL_REG_NUM_PER_APU 66
-#define APEX_TOTAL_APU_NUM	2
-#define APEX_TOTAL_REG_NUM APEX_TOTAL_REG_NUM_PER_APU*APEX_TOTAL_APU_NUM
 
 
 /***** TRUE OFFSETS ******/
