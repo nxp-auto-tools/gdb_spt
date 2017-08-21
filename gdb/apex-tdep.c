@@ -127,18 +127,6 @@ apex_registers_info (struct gdbarch    *gdbarch,
   return;
 }
 
-
-
-static CORE_ADDR
-apex_skip_prologue (struct gdbarch *gdbarch,
-		    CORE_ADDR       pc)
-{
-	//TODO:
-  return pc;
-}
-
-
-
 static const gdb_byte *
 apex_breakpoint_from_pc (struct gdbarch *gdbarch,
 			 CORE_ADDR      *bp_addr,
@@ -152,7 +140,6 @@ apex_breakpoint_from_pc (struct gdbarch *gdbarch,
 
 
 /* Implement the "unwind_pc" gdbarch method.  */
-
 static CORE_ADDR
 apex_unwind_pc (struct gdbarch *gdbarch, struct frame_info *this_frame)
 {
@@ -163,13 +150,186 @@ apex_unwind_pc (struct gdbarch *gdbarch, struct frame_info *this_frame)
 }
 
 /* Implement the "unwind_sp" gdbarch method.  */
-
 static CORE_ADDR
 apex_unwind_sp (struct gdbarch *gdbarch, struct frame_info *this_frame)
 {
   return frame_unwind_register_unsigned (this_frame, APEX_SP_REGNUM);
 }
+/* apex cache structure.  */
+struct apex_unwind_cache
+{
+  /* The frame's base, optionally used by the high-level debug info.  */
+  CORE_ADDR base;
 
+  /* The previous frame's inner most stack address.  Used as this
+     frame ID's stack_ baddr.  */
+  CORE_ADDR cfa;
+
+  /* The address of the first instruction in this function */
+  CORE_ADDR pc;
+
+  /* The offset of register saved on stack.  If register is not saved, the
+     corresponding element is -1.  */
+  CORE_ADDR reg_saved[APEX_NUM_REGS];
+};
+
+static void
+apex_setup_default (struct apex_unwind_cache *cache)
+{
+  int i;
+
+  for (i = 0; i < APEX_NUM_REGS; i++)
+    cache->reg_saved[i] = -1;
+}
+
+/* Do a full analysis of the prologue at START_PC and update CACHE accordingly.
+   Bail out early if CURRENT_PC is reached.  Returns the address of the first
+   instruction after the prologue.  */
+
+static CORE_ADDR
+apex_analyze_prologue (struct gdbarch *gdbarch,
+		       CORE_ADDR start_pc, CORE_ADDR current_pc,
+		       struct apex_unwind_cache *cache,
+		       struct frame_info *this_frame)
+{
+  // TODO: it is not implemented yet!
+  CORE_ADDR pc = start_pc;
+  CORE_ADDR return_pc = start_pc;
+  int frame_base_offset_to_sp = 0;
+
+  if (start_pc >= current_pc)
+    return_pc = current_pc;
+
+  if (cache)
+  {
+    cache->base = 0;
+
+    if (this_frame)
+      {
+	cache->base = get_frame_register_unsigned (this_frame, APEX_SP_REGNUM);
+	cache->cfa = cache->base + frame_base_offset_to_sp;
+      }
+  }
+
+  return return_pc;
+}
+
+/* Implement the "skip_prologue" gdbarch method.  */
+
+static CORE_ADDR
+apex_skip_prologue (struct gdbarch *gdbarch, CORE_ADDR pc)
+{
+  unsigned long inst;
+  CORE_ADDR skip_pc;
+  CORE_ADDR func_addr, limit_pc;
+  struct symtab_and_line sal;
+
+  /* See if we can determine the end of the prologue via the symbol
+     table.  If so, then return either PC, or the PC after the
+     prologue, whichever is greater.  */
+  if (find_pc_partial_function (pc, NULL, &func_addr, NULL))
+    {
+      CORE_ADDR post_prologue_pc =
+	skip_prologue_using_sal (gdbarch, func_addr);
+
+      if (post_prologue_pc != 0)
+	return max (pc, post_prologue_pc);
+    }
+
+   return pc;
+}
+
+/* Frame base handling.  */
+static struct apex_unwind_cache *
+apex_frame_unwind_cache (struct frame_info *this_frame, void **this_cache)
+{
+  struct gdbarch *gdbarch = get_frame_arch (this_frame);
+  struct apex_unwind_cache *cache;
+  CORE_ADDR current_pc;
+
+  if (*this_cache != NULL)
+    return (struct apex_unwind_cache *) *this_cache;
+
+  cache = FRAME_OBSTACK_ZALLOC (struct apex_unwind_cache);
+  (*this_cache) = cache;
+
+  apex_setup_default (cache);
+
+  cache->pc = get_frame_func (this_frame);
+  current_pc = get_frame_pc (this_frame);
+
+  /* Prologue analysis does the rest...  */
+  if ((cache->pc & 0xFFFFFFFF) != 0)
+    apex_analyze_prologue (gdbarch, cache->pc, current_pc, cache, this_frame);
+
+  return cache;
+}
+
+/* Implement the "stop_reason" frame_unwind method.  */
+static enum unwind_stop_reason
+apex_frame_unwind_stop_reason (struct frame_info *this_frame,
+					   void **this_cache)
+{
+  struct apex_unwind_cache *cache
+    = apex_frame_unwind_cache (this_frame, this_cache);
+
+  /* We've hit a wall, stop.  */
+  if (cache->base == 0)
+    return UNWIND_OUTERMOST;
+
+  return UNWIND_NO_REASON;
+}
+
+static void
+apex_frame_this_id (struct frame_info *this_frame,
+			  void **this_cache, struct frame_id *this_id)
+{
+  struct apex_unwind_cache *cache =
+     apex_frame_unwind_cache (this_frame, this_cache);
+
+  /* This marks the outermost frame.  */
+  if (cache->base == 0)
+    return;
+
+  (*this_id) = frame_id_build (cache->cfa, cache->pc);
+}
+
+static struct value *
+apex_frame_prev_register (struct frame_info *this_frame,
+			  void **this_cache, int regnum)
+{
+  struct apex_unwind_cache *cache =
+	apex_frame_unwind_cache (this_frame, this_cache);
+  CORE_ADDR noFrame;
+  int i;
+
+  /* If we are asked to unwind the PC, then we need to unwind PC ? */
+  if (regnum == APEX_PC_REGNUM)
+      //return apex_prev_pc_register(this_frame);
+	  return frame_unwind_got_register(this_frame,regnum, regnum);
+
+  if (regnum == APEX_SP_REGNUM && cache->cfa)
+    return frame_unwind_got_constant (this_frame, regnum, cache->cfa);
+
+  /* If we've worked out where a register is stored then load it from
+     there.  */
+  if (regnum < APEX_NUM_REGS && cache->reg_saved[regnum] != -1)
+    return frame_unwind_got_memory (this_frame, regnum,
+				    cache->reg_saved[regnum]);
+
+  return frame_unwind_got_register (this_frame, regnum, regnum);
+}
+
+/* APEX prologue unwinder.  */
+static const struct frame_unwind apex_frame_unwind =
+{
+  NORMAL_FRAME,
+  apex_frame_unwind_stop_reason,
+  apex_frame_this_id,
+  apex_frame_prev_register,
+  NULL,
+  default_frame_sniffer
+};
 
 /* Map a DWARF register REGNUM onto the appropriate GDB register
    number.  */
@@ -295,12 +455,13 @@ apex_gdbarch_init (struct gdbarch_info info,
   /* Functions to supply register information */
   set_gdbarch_register_name         (gdbarch, apex_register_name);
   set_gdbarch_register_type         (gdbarch, apex_register_type);
-  set_gdbarch_print_registers_info  (gdbarch, apex_registers_info);
+ // set_gdbarch_print_registers_info  (gdbarch, apex_registers_info);
 
   /* Frame handling.  */
   set_gdbarch_unwind_pc (gdbarch, apex_unwind_pc);
   set_gdbarch_unwind_sp (gdbarch, apex_unwind_sp);  
-  
+  frame_unwind_append_unwinder (gdbarch, &apex_frame_unwind);
+
   /* Functions to analyse frames */
   set_gdbarch_skip_prologue         (gdbarch, apex_skip_prologue);
   set_gdbarch_inner_than            (gdbarch, core_addr_lessthan);
