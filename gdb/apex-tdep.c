@@ -388,16 +388,22 @@ apex_gdbarch_init (struct gdbarch_info info,
                                         acp_register_names[i]);
   }
 
-  valid_p &= tdesc_numbered_register_choices (feature, tdesc_data, APEX_SP_REGNUM,
-                                              apex_sp_names);
+  valid_p &= tdesc_numbered_register_choices (feature, tdesc_data, APEX_LR_REGNUM,
+                                              apex_lr_names);
   i++;
 
   valid_p &= tdesc_numbered_register_choices (feature, tdesc_data, APEX_VSP_REGNUM,
                                               apex_vsp_names);
   i++;
+
+  valid_p &= tdesc_numbered_register_choices (feature, tdesc_data, APEX_SP_REGNUM,
+                                              apex_sp_names);
+  i++;
+
+  valid_p &= tdesc_numbered_register (feature, tdesc_data, APEX_OV_REGNUM, "ov");
+  i++;
   
-  valid_p &= tdesc_numbered_register_choices (feature, tdesc_data, APEX_LR_REGNUM,
-                                              apex_lr_names);
+  valid_p &= tdesc_numbered_register (feature, tdesc_data, APEX_PC_REGNUM, "pc");
   i++;
 
 
@@ -441,7 +447,7 @@ apex_gdbarch_init (struct gdbarch_info info,
   /* Register architecture */
   set_gdbarch_pc_regnum (gdbarch, APEX_PC_REGNUM);
   set_gdbarch_sp_regnum (gdbarch, APEX_SP_REGNUM);
-  set_gdbarch_num_regs              (gdbarch, regs_num);
+  set_gdbarch_num_regs  (gdbarch, regs_num);
 
     /* Information about the target architecture */
   set_gdbarch_return_value          (gdbarch, apex_return_value);

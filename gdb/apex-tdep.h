@@ -21,12 +21,12 @@ enum {
   APEX_SP_REGNUM,
   APEX_OV_REGNUM,
   APEX_PC_REGNUM,
-  
+  APEX_ACP_REGS,
   /* vector unit registers */
   //APEX_VU_REGNUM,
   //LAST_APEX_VU_REGNUM = APEX_VU_REGNUM + (32/*cu*/*22/*per each cu*/),
   
-  APEX_NUM_REGS,
+  APEX_NUM_REGS = APEX_ACP_REGS,
 };
 
 
