@@ -170,7 +170,7 @@ struct apex_unwind_cache
 
   /* The offset of register saved on stack.  If register is not saved, the
      corresponding element is -1.  */
-  CORE_ADDR reg_saved[APEX_NUM_REGS];
+  CORE_ADDR reg_saved[APEX_ACP_REGS];
 };
 
 static void
@@ -178,21 +178,17 @@ apex_setup_default (struct apex_unwind_cache *cache)
 {
   int i;
 
-  for (i = 0; i < APEX_NUM_REGS; i++)
+  for (i = 0; i < APEX_ACP_REGS; i++)
     cache->reg_saved[i] = -1;
 }
 
-/* Do a full analysis of the prologue at START_PC and update CACHE accordingly.
-   Bail out early if CURRENT_PC is reached.  Returns the address of the first
-   instruction after the prologue.  */
-
+/* Returns the address of the first instruction after the prologue.  */
 static CORE_ADDR
 apex_analyze_prologue (struct gdbarch *gdbarch,
 		       CORE_ADDR start_pc, CORE_ADDR current_pc,
 		       struct apex_unwind_cache *cache,
 		       struct frame_info *this_frame)
 {
-  // TODO: it is not implemented yet!
   CORE_ADDR pc = start_pc;
   CORE_ADDR return_pc = start_pc;
   int frame_base_offset_to_sp = 0;
@@ -213,8 +209,6 @@ apex_analyze_prologue (struct gdbarch *gdbarch,
 
   return return_pc;
 }
-
-/* Implement the "skip_prologue" gdbarch method.  */
 
 static CORE_ADDR
 apex_skip_prologue (struct gdbarch *gdbarch, CORE_ADDR pc)
@@ -313,7 +307,7 @@ apex_frame_prev_register (struct frame_info *this_frame,
 
   /* If we've worked out where a register is stored then load it from
      there.  */
-  if (regnum < APEX_NUM_REGS && cache->reg_saved[regnum] != -1)
+  if (regnum < APEX_ACP_REGS && cache->reg_saved[regnum] != -1)
     return frame_unwind_got_memory (this_frame, regnum,
 				    cache->reg_saved[regnum]);
 
@@ -452,7 +446,7 @@ apex_gdbarch_init (struct gdbarch_info info,
     /* Information about the target architecture */
   set_gdbarch_return_value          (gdbarch, apex_return_value);
   set_gdbarch_breakpoint_from_pc    (gdbarch, apex_breakpoint_from_pc);
-
+  set_gdbarch_bits_big_endian 		(gdbarch, BFD_ENDIAN_LITTLE);
 
 
     /* Internal <-> external register number maps.  */
