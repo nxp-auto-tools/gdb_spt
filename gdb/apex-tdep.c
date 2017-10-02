@@ -338,6 +338,13 @@ apex_dwarf_reg_to_regnum (struct gdbarch *gdbarch, int reg)
   return -1;
 }
 
+static int
+apex_gdb_print_insn (bfd_vma memaddr, disassemble_info *info)
+{
+  info->symbols = NULL;
+  return print_insn_apex (memaddr, info);
+}
+
 
 static struct gdbarch *
 apex_gdbarch_init (struct gdbarch_info info,
@@ -470,7 +477,7 @@ apex_gdbarch_init (struct gdbarch_info info,
   tdesc_use_registers (gdbarch, tdesc, tdesc_data);
 
   /* instruction set printer */
-  set_gdbarch_print_insn (gdbarch, print_insn_apex);
+  set_gdbarch_print_insn (gdbarch, apex_gdb_print_insn);
 
 
   return gdbarch;
