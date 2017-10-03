@@ -4,11 +4,11 @@
 #include "sysdep.h"
 
 #include "dis-asm.h"
-#include "opcode/apex.h"
+#include "apex-opc.h"
+#include "elf-bfd.h"
 
 int
-print_insn_apex(bfd_vma pc ATTRIBUTE_UNUSED, disassemble_info *info ATTRIBUTE_UNUSED)
-{
+print_insn_apex(bfd_vma pc, disassemble_info *info){
 
-  return 0;
+	return 0;
 }

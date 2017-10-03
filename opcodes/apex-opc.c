@@ -4,7 +4,7 @@
 
 
 #include "sysdep.h"
-#include "opcode/apex.h"
+#include "apex-opc.h"
 
 const apex_opc_info_t apex_APC_32b_opc_info[] =
 {
@@ -15,8 +15,8 @@ const apex_opc_info_t apex_APC_32b_opc_info[] =
 	{       "lhu", 0, 0x20000000U, OPERAND_FIRST|OPERAND_SECOND|OPERAND_C},
 	{        "lw", 0, 0x22000000U, OPERAND_FIRST|OPERAND_SECOND|OPERAND_C},
 	{      	 "sb", 0, 0x26000000U, OPERAND_FIRST|OPERAND_SECOND|OPERAND_C},
-	{        "sh", 0, 0x2800000fU, OPERAND_FIRST|OPERAND_SECOND|OPERAND_C},
-	{        "sw", 0, 0x2A00000fU, OPERAND_FIRST|OPERAND_SECOND|OPERAND_C},
+	{        "sh", 0, 0x28000000U, OPERAND_FIRST|OPERAND_SECOND|OPERAND_C},
+	{        "sw", 0, 0x2A000000U, OPERAND_FIRST|OPERAND_SECOND|OPERAND_C},
 	{    "lbpost", 0, 0x00000022U, OPERAND_FIRST|OPERAND_SECOND|OPERAND_THIRD},
 	{	"lbupost", 0, 0x00000023U, OPERAND_FIRST|OPERAND_SECOND|OPERAND_THIRD},
 	{  	 "lhpost", 0, 0x00000024U, OPERAND_FIRST|OPERAND_SECOND|OPERAND_THIRD},
