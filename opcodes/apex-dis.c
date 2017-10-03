@@ -10,7 +10,5 @@
 int
 print_insn_apex(bfd_vma pc, disassemble_info *info){
 
-	bfd_byte
-
 	return 0;
 }
