@@ -60,6 +60,7 @@ BUILD_LIB_DEPS = @BUILD_LIB_DEPS@
 # Header files.
 HFILES = \
 	aarch64-asm.h aarch64-dis.h aarch64-opc.h aarch64-tbl.h \
+	apex-dis.h apex-opc.h \
 	epiphany-desc.h epiphany-opc.h \
 	fr30-desc.h fr30-opc.h \
 	frv-desc.h frv-opc.h \
