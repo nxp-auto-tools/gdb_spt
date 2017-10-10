@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE target SYSTEM "gdb-target.dtd">
+<target version="1.0">
+  <architecture>spt</architecture>
+  <feature name="org.gnu.gdb.spt">
+ </feature>
+</target>

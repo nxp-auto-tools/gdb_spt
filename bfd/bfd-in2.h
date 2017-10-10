@@ -2346,6 +2346,11 @@ enum bfd_architecture
 #define bfd_mach_nios2r2       2
   bfd_arch_visium,     /* Visium */
 #define bfd_mach_visium        1
+  bfd_arch_spt,     /* SPT */
+#define bfd_mach_spt1        1 
+#define bfd_mach_spt2        2
+#define bfd_mach_spt25       25
+#define bfd_mach_spt3        3   
   bfd_arch_last
   };
 
