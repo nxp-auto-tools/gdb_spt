@@ -323,7 +323,7 @@ char * sptCopyInstruction_dis()
 char * sptDummyInstruction_dis()
 {
  
-	sprintf(outbuff, "Unknown instruction code");
+	sprintf(outbuff, "Unknown instruction code i0 - 0x%x, 0x%x, 0x%x, 0x%x",insn[0],insn[1],insn[2],insn[3]);
 	return outbuff;
 }
 
@@ -1082,15 +1082,15 @@ char * sptWinInstruction_dis()
 	return  outbuff;
 }
 	
-char * sptDisassemle(unsigned  * ins){
-
+char * sptDisassemle(){
+/*
      for(int i =0;i<4;i++)
 	{
 	insn[i] = *ins;
 	ins++;
-	}
+	}*/
 
-	byte opcode = ((ins[0]>>24) & 0xfc) >> 2;
+	byte opcode = ((insn[0]>>24) & 0xfc) >> 2;
 	switch (opcode)
 	{
 	case OPCODE_SET:
@@ -1186,9 +1186,10 @@ char * sptDisassemle(unsigned  * ins){
 
 int
 print_insn_spt(bfd_vma pc  ATTRIBUTE_UNUSED, disassemble_info *info  ATTRIBUTE_UNUSED){
-int bigendian =0;
+int bigendian =1;
   bfd_byte buffer[16];
-  unsigned  insn[4];
+ // unsigned  insn[4];
+  
   int status;
   int buf_size = 16;
   if (info->buffer_length) {
@@ -1214,6 +1215,6 @@ int bigendian =0;
     insn[3] = bfd_getl32 (buffer +3*4);
   }
   int sz = 16;
-  (*info->fprintf_func) (info->stream, (sptDisassemle(insn)) );
+  (*info->fprintf_func) (info->stream, (sptDisassemle()) );
   return sz;  
 }
