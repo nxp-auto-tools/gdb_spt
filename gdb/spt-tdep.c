@@ -69,9 +69,104 @@ spt_register_name (struct gdbarch *gdbarch, int regnum)
   if (regnum < SPARC32_NUM_REGS + SPARC32_NUM_PSEUDO_REGS)
     return sparc32_pseudo_register_names[regnum - SPARC32_NUM_REGS];*/
 
-  return "no reg";
+  return "pc";
 }
 
+static struct type *
+spt_register_type (struct gdbarch *arch,
+		    int             regnum)
+{
+  //TODO:
+  return builtin_type (arch)->builtin_uint32;
+}
+
+
+
+
+static void
+spt_registers_info (struct gdbarch    *gdbarch,
+		     struct ui_file    *file,
+		     struct frame_info *frame,
+		     int                regnum,
+		     int                all)
+{
+	//TODO:
+  return;
+}
+
+
+/* Software single-stepping support.  */
+/*
+static int
+spu_software_single_step (struct frame_info *frame)
+{
+  struct gdbarch *gdbarch = get_frame_arch (frame);
+  struct address_space *aspace = get_frame_address_space (frame);
+  enum bfd_endian byte_order = gdbarch_byte_order (gdbarch);
+  CORE_ADDR pc, next_pc;
+  unsigned int insn;
+  int offset, reg;
+  gdb_byte buf[4];
+  ULONGEST lslr;
+
+  pc = get_frame_pc (frame);
+
+  if (target_read_memory (pc, buf, 4))
+    throw_error (MEMORY_ERROR, _("Could not read instruction at %s."),
+		 paddress (gdbarch, pc));
+
+  insn = extract_unsigned_integer (buf, 4, byte_order);
+
+  // Get local store limit.  
+  lslr = get_frame_register_unsigned (frame, SPU_LSLR_REGNUM);
+  if (!lslr)
+    lslr = (ULONGEST) -1;
+
+
+  if ((insn & 0xffffff00) == 0x00002100)
+    next_pc = (SPUADDR_ADDR (pc) + 8) & lslr;
+  else
+    next_pc = (SPUADDR_ADDR (pc) + 4) & lslr;
+
+  insert_single_step_breakpoint (gdbarch,
+				 aspace, SPUADDR (SPUADDR_SPU (pc), next_pc));
+
+  if (is_branch (insn, &offset, &reg))
+    {
+      CORE_ADDR target = offset;
+
+      if (reg == SPU_PC_REGNUM)
+	target += SPUADDR_ADDR (pc);
+      else if (reg != -1)
+	{
+	  int optim, unavail;
+
+	  if (get_frame_register_bytes (frame, reg, 0, 4, buf,
+					 &optim, &unavail))
+	    target += extract_unsigned_integer (buf, 4, byte_order) & -4;
+	  else
+	    {
+	      if (optim)
+		throw_error (OPTIMIZED_OUT_ERROR,
+			     _("Could not determine address of "
+			       "single-step breakpoint."));
+	      if (unavail)
+		throw_error (NOT_AVAILABLE_ERROR,
+			     _("Could not determine address of "
+			       "single-step breakpoint."));
+	    }
+	}
+
+      target = target & lslr;
+      if (target != next_pc)
+	insert_single_step_breakpoint (gdbarch, aspace,
+				       SPUADDR (SPUADDR_SPU (pc), target));
+    }
+
+  return 1;
+}
+
+*/
 
 
 static struct gdbarch *
@@ -102,15 +197,15 @@ spt_gdbarch_init (struct gdbarch_info info,
   //set_gdbarch_return_value          (gdbarch, apex_return_value);
  // set_gdbarch_breakpoint_from_pc    (gdbarch, apex_breakpoint_from_pc);
   set_gdbarch_bits_big_endian 	    (gdbarch, BFD_ENDIAN_LITTLE);
-  set_gdbarch_num_regs (gdbarch, 0);
+  set_gdbarch_num_regs (gdbarch, 1);
 
     /* Internal <-> external register number maps.  */
   //set_gdbarch_dwarf2_reg_to_regnum (gdbarch, apex_dwarf_reg_to_regnum);
 
   /* Functions to supply register information */
   set_gdbarch_register_name         (gdbarch, spt_register_name);
- // set_gdbarch_register_type         (gdbarch, apex_register_type);
- // set_gdbarch_print_registers_info  (gdbarch, apex_registers_info);
+  set_gdbarch_register_type         (gdbarch, spt_register_type);
+  set_gdbarch_print_registers_info  (gdbarch, spt_registers_info);
 
   /* Frame handling.  */
  // set_gdbarch_unwind_pc (gdbarch, apex_unwind_pc);
@@ -121,9 +216,15 @@ spt_gdbarch_init (struct gdbarch_info info,
   set_gdbarch_skip_prologue         (gdbarch, spt_skip_prologue);
   set_gdbarch_inner_than            (gdbarch, core_addr_lessthan);
   set_gdbarch_breakpoint_from_pc (gdbarch, spt_breakpoint_from_pc);
+  set_gdbarch_pc_regnum (gdbarch, 0);
 
   /*Associates registers description with arch*/
  // tdesc_use_registers (gdbarch, tdesc, tdesc_data);
+ 
+ 
+//set_gdbarch_software_single_step (gdbarch, spu_software_single_step);
+
+
 
   /* instruction set printer */
   set_gdbarch_print_insn (gdbarch, print_insn_spt);
@@ -171,7 +272,7 @@ _initialize_spt_tdep (void)
 {
 	  gdbarch_register (bfd_arch_spt, spt_gdbarch_init, spt_dump_tdep);
 	  /* Tell remote stub that we support XML target description.  */
-	  register_remote_support_xml ("spt");//really need it ???
+	  //register_remote_support_xml ("spt");//really need it ???
 
 
 } /* _initialize_spt_tdep() */

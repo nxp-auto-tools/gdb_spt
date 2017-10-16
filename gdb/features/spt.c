@@ -17,7 +17,7 @@ initialize_tdesc_spt (void)
   set_tdesc_architecture (result, bfd_scan_arch ("spt"));
 
   feature = tdesc_create_feature (result, "org.gnu.gdb.spt");
-  
+   tdesc_create_reg (feature, "pc", 0, 1, NULL, 32, "uint32");
 
   tdesc_spt = result;
 }

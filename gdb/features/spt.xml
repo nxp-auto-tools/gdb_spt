@@ -4,5 +4,6 @@
 <target version="1.0">
   <architecture>spt</architecture>
   <feature name="org.gnu.gdb.spt">
+    <reg name="pc" bitsize="32" type="uint32"/>
  </feature>
 </target>
