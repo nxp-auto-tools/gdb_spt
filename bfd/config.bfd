@@ -284,12 +284,10 @@ case "${targ}" in
     ;;
     
   spt*)
-  ;;
-  arc*eb-*-elf* | arc*eb-*-linux*)
-    targ_defvec=arc_elf32_be_vec
-    targ_selvecs=arc_elf32_le_vec
+    targ_defvec=spt_elf32_vec
+    targ_selvecs="spt_elf32_vec"
     ;;
-
+    
   arc*-*-elf* | arc*-*-linux*)
     targ_defvec=arc_elf32_le_vec
     targ_selvecs=arc_elf32_be_vec
