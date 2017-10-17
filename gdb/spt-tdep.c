@@ -233,7 +233,7 @@ spt_frame_unwind_cache (struct frame_info *this_frame, void **this_cache)
   CORE_ADDR current_pc;
 
   if (*this_cache != NULL)
-    return (struct apex_unwind_cache *) *this_cache;
+    return (struct spt_unwind_cache *) *this_cache;
 
   cache = FRAME_OBSTACK_ZALLOC (struct spt_unwind_cache);
   (*this_cache) = cache;
