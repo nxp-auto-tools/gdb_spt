@@ -9,5 +9,9 @@
 #define TARGET_SPT
 #endif
 
+#define SPT_PC_REGNUM 0
+
+
+
 
 #endif
