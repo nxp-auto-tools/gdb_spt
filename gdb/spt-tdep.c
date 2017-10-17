@@ -264,7 +264,29 @@ spt_frame_this_id (struct frame_info *this_frame,
 }
 
 
- 
+static struct value *
+spt_frame_prev_register (struct frame_info *this_frame,
+			  void **this_cache, int regnum)
+{
+  struct spt_unwind_cache *cache =
+	spt_frame_unwind_cache (this_frame, this_cache);
+  CORE_ADDR noFrame;
+  int i;
+
+  /* If we are asked to unwind the PC, then we need to unwind PC ? */
+  if (regnum == SPT_PC_REGNUM)
+      //return apex_prev_pc_register(this_frame);
+	  return frame_unwind_got_register(this_frame,regnum, regnum);
+
+  /* If we've worked out where a register is stored then load it from
+     there.  */
+ /* if (regnum < APEX_ACP_REGS && cache->reg_saved[regnum] != -1)
+    return frame_unwind_got_memory (this_frame, regnum,
+				    cache->reg_saved[regnum]);*/
+
+  return frame_unwind_got_register (this_frame, regnum, regnum);
+}
+
  
  static const struct frame_unwind spt_frame_unwind =
 {
@@ -325,7 +347,7 @@ spt_gdbarch_init (struct gdbarch_info info,
   set_gdbarch_skip_prologue         (gdbarch, spt_skip_prologue);
   set_gdbarch_inner_than            (gdbarch, core_addr_lessthan);
   set_gdbarch_breakpoint_from_pc (gdbarch, spt_breakpoint_from_pc);
-  set_gdbarch_pc_regnum (gdbarch, 0);
+  set_gdbarch_pc_regnum (gdbarch, SPT_PC_REGNUM);
   
   set_gdbarch_read_pc (gdbarch, spt_read_pc);
   set_gdbarch_write_pc (gdbarch, spt_write_pc);
