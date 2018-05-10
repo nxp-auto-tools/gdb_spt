@@ -250,7 +250,7 @@ case $basic_machine in
 	| aarch64 | aarch64_be \
 	| alpha | alphaev[4-8] | alphaev56 | alphaev6[78] | alphapca5[67] \
 	| alpha64 | alpha64ev[4-8] | alpha64ev56 | alpha64ev6[78] | alpha64pca5[67] \
-	| am33_2.0 | apex| spt \
+	| am33_2.0 | apex| spt2| spt3 \
 	| arc | arceb \
 	| arm | arm[bl]e | arme[lb] | armv[2-8] | armv[3-8][lb] | armv7[arm] \
 	| avr | avr32 \
@@ -374,7 +374,7 @@ case $basic_machine in
 	| alpha-* | alphaev[4-8]-* | alphaev56-* | alphaev6[78]-* \
 	| alpha64-* | alpha64ev[4-8]-* | alpha64ev56-* | alpha64ev6[78]-* \
 	| alphapca5[67]-* | alpha64pca5[67]-* | arc-* | arceb-* \
-	| apex-* |spt-* \
+	| apex-* |spt2-* | spt3-* \
 	| arm-*  | armbe-* | armle-* | armeb-* | armv*-* \
 	| avr-* | avr32-* \
 	| ba-* \
@@ -1572,11 +1572,18 @@ case $basic_machine in
 	apex*-linux)
 		os=-linux
 		;;
-	#SPT 
-	spt*-bare)
+	#SPT2 
+	spt2*-bare)
 		os=-none
 		;;
-	spt*-linux)
+	spt2*-linux)
+		os=-linux
+		;;
+	#SPT3 
+	spt3*-bare)
+		os=-none
+		;;
+	spt3*-linux)
 		os=-linux
 		;;			
 	arm*-rebel)
@@ -1805,7 +1812,10 @@ case $basic_machine in
 			-apex*)
 				vendor=nxp
 				;;
-			-spt*)
+			-spt2*)
+				vendor=nxp
+				;;
+			-spt3*)
 				vendor=nxp
 				;;				
 			-hms*)

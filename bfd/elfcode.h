@@ -73,6 +73,7 @@
 #include "elf-bfd.h"
 #include "libiberty.h"
 
+
 /* Renaming structures, typedefs, macros and functions to be size-specific.  */
 #define Elf_External_Ehdr	NAME(Elf,External_Ehdr)
 #define Elf_External_Sym	NAME(Elf,External_Sym)
@@ -499,7 +500,7 @@ elf_object_p (bfd *abfd)
   const bfd_target *target;
 
   /* Read in the ELF header in external format.  */
-
+  fprintf (stderr, "Entering elfobject_p !\n");
   if (bfd_bread (&x_ehdr, sizeof (x_ehdr), abfd) != sizeof (x_ehdr))
     {
       if (bfd_get_error () != bfd_error_system_call)
@@ -508,17 +509,18 @@ elf_object_p (bfd *abfd)
 	goto got_no_match;
     }
 
+    fprintf (stderr, "Check header len passed !\n");
   /* Now check to see if we have a valid ELF file, and one that BFD can
      make use of.  The magic number must match, the address size ('class')
      and byte-swapping must match our XVEC entry, and it must have a
      section header table (FIXME: See comments re sections at top of this
      file).  */
-
+  fprintf (stderr, "ELF header mag-%d elf vesrion %d - %d , %d- %d!\n", elf_file_p (&x_ehdr),x_ehdr.e_ident[EI_VERSION],EV_CURRENT,x_ehdr.e_ident[EI_CLASS],ELFCLASS);
   if (! elf_file_p (&x_ehdr)
       || x_ehdr.e_ident[EI_VERSION] != EV_CURRENT
       || x_ehdr.e_ident[EI_CLASS] != ELFCLASS)
     goto got_wrong_format_error;
-
+fprintf (stderr, "Check ELF valid passed! \n" );
   /* Check that file's byte order matches xvec's */
   switch (x_ehdr.e_ident[EI_DATA])
     {
@@ -534,7 +536,7 @@ elf_object_p (bfd *abfd)
     default:			/* Unknown data encoding specified */
       goto got_wrong_format_error;
     }
-
+fprintf (stderr, "Check ELF endianess passed!\n");
   target = abfd->xvec;
 
   /* Allocate an instance of the elf_obj_tdata structure and hook it up to
@@ -549,7 +551,8 @@ elf_object_p (bfd *abfd)
 #if DEBUG & 1
   elf_debug_file (i_ehdrp);
 #endif
-
+fprintf (stderr, "Check CORE!\n");
+  
   /* Reject ET_CORE (header indicates core file, not object file) */
   if (i_ehdrp->e_type == ET_CORE)
     goto got_wrong_format_error;
@@ -565,16 +568,21 @@ elf_object_p (bfd *abfd)
   if (i_ehdrp->e_shentsize != sizeof (x_shdr) && i_ehdrp->e_shnum != 0)
     goto got_wrong_format_error;
 
+fprintf (stderr, "Check Header1!\n"); 
   /* Further sanity check.  */
   if (i_ehdrp->e_shoff == 0 && i_ehdrp->e_shnum != 0)
     goto got_wrong_format_error;
 
   ebd = get_elf_backend_data (abfd);
+  fprintf (stderr, "Check Header1_0_1! elf arch sz %d - sz%d \n",ebd->s->arch_size, ARCH_SIZE);
+  
   if (ebd->s->arch_size != ARCH_SIZE)
     goto got_wrong_format_error;
 
   /* Check that the ELF e_machine field matches what this particular
      BFD format expects.  */
+  fprintf (stderr, "Check Header1_0_2! elf machine code %d - ehdr %d \n",ebd->elf_machine_code, i_ehdrp->e_machine);
+  
   if (ebd->elf_machine_code != i_ehdrp->e_machine
       && (ebd->elf_machine_alt1 == 0
 	  || i_ehdrp->e_machine != ebd->elf_machine_alt1)
@@ -582,12 +590,14 @@ elf_object_p (bfd *abfd)
 	  || i_ehdrp->e_machine != ebd->elf_machine_alt2)
       && ebd->elf_machine_code != EM_NONE)
     goto got_wrong_format_error;
+  
+  
 
   if (i_ehdrp->e_type == ET_EXEC)
     abfd->flags |= EXEC_P;
   else if (i_ehdrp->e_type == ET_DYN)
     abfd->flags |= DYNAMIC;
-
+fprintf (stderr, "Check Header1_1!\n"); 
   if (i_ehdrp->e_phnum > 0)
     abfd->flags |= D_PAGED;
 
@@ -603,31 +613,34 @@ elf_object_p (bfd *abfd)
       && ebd->elf_osabi != ELFOSABI_NONE)
     goto got_wrong_format_error;
 
+  fprintf (stderr, "Check Header1_2!\n"); 
   if (i_ehdrp->e_shoff != 0)
     {
+      fprintf (stderr, "Check Header1_2_0!\n"); 
       file_ptr where = (file_ptr) i_ehdrp->e_shoff;
-
+ fprintf (stderr, "Check Header1_2_1!\n"); 
       /* Seek to the section header table in the file.  */
       if (bfd_seek (abfd, where, SEEK_SET) != 0)
 	goto got_no_match;
-
+ fprintf (stderr, "Check Header1_2_3!\n"); 
       /* Read the first section header at index 0, and convert to internal
 	 form.  */
       if (bfd_bread (&x_shdr, sizeof x_shdr, abfd) != sizeof (x_shdr))
 	goto got_no_match;
       elf_swap_shdr_in (abfd, &x_shdr, &i_shdr);
-
+ fprintf (stderr, "Check Header1_2_5!\n"); 
       /* If the section count is zero, the actual count is in the first
 	 section header.  */
       if (i_ehdrp->e_shnum == SHN_UNDEF)
 	{
+	  fprintf (stderr, "Check Header1_2_6 S.Num-%d, %d,%d!\n",i_ehdrp->e_shnum,i_shdr.sh_size,SHN_LORESERVE);
 	  i_ehdrp->e_shnum = i_shdr.sh_size;
 	  if (i_ehdrp->e_shnum >= SHN_LORESERVE
 	      || i_ehdrp->e_shnum != i_shdr.sh_size
 	      || i_ehdrp->e_shnum  == 0)
 	    goto got_wrong_format_error;
 	}
-
+fprintf (stderr, "Check Header1_3!\n"); 
       /* And similarly for the string table index.  */
       if (i_ehdrp->e_shstrndx == (SHN_XINDEX & 0xffff))
 	{
@@ -643,7 +656,7 @@ elf_object_p (bfd *abfd)
 	  if (i_ehdrp->e_phnum != i_shdr.sh_info)
 	    goto got_wrong_format_error;
 	}
-
+fprintf (stderr, "Check Header2!\n"); 
       /* Sanity check that we can read all of the section headers.
 	 It ought to be good enough to just read the last one.  */
       if (i_ehdrp->e_shnum != 1)
@@ -668,7 +681,7 @@ elf_object_p (bfd *abfd)
 	    goto got_no_match;
 	}
     }
-
+fprintf (stderr, "Check Section1!\n"); 
   /* Allocate space for a copy of the section header table in
      internal form.  */
   if (i_ehdrp->e_shnum != 0)
@@ -743,7 +756,7 @@ elf_object_p (bfd *abfd)
 	    abfd->flags &= ~D_PAGED;
 	}
     }
-
+fprintf (stderr, "Check Section2!\n"); 
   /* A further sanity check.  */
   if (i_ehdrp->e_shnum != 0)
     {

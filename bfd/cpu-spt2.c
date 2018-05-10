@@ -11,9 +11,9 @@
     BITS_WORD, /* bits in a word */			\
     BITS_ADDR, /* bits in an address */			\
     8,	/* 8 bits in a byte */				\
-    bfd_arch_spt,					\
+    bfd_arch_spt2,					\
     NUMBER,						\
-    "spt",						\
+    "spt2",						\
     PRINT,						\
     3,							\
     DEFAULT,						\
@@ -28,8 +28,8 @@
 /* These exist only so that we can reasonably disassemble PALcode.  */
 static const bfd_arch_info_type arch_info_struct[] =
 {
-  N (32, 32, bfd_mach_spt2, "spt_32", FALSE, 0),
+  N (32, 32, bfd_mach_spt2, "spt2_32", FALSE, 0),
 };
 
-const bfd_arch_info_type bfd_spt_arch =
-  N (32, 32, 0, "spt", TRUE, NN(0));
+const bfd_arch_info_type bfd_spt2_arch =
+  N (32, 32, 0, "spt2", TRUE, NN(0));

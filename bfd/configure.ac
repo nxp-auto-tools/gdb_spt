@@ -662,7 +662,8 @@ do
     sparc_elf64_sol2_vec)	 tb="$tb elf64-sparc.lo elfxx-sparc.lo elf-vxworks.lo elf64.lo $elf"; target_size=64 ;;
     sparc_nlm32_vec)		 tb="$tb nlm32-sparc.lo nlm32.lo nlm.lo" ;;
     spu_elf32_vec)		 tb="$tb elf32-spu.lo elf32.lo $elf" ;;
-    spt_elf32_vec)		 tb="$tb elf32-spt.lo elf32.lo $elf" ;;
+    spt2_elf32_vec)		 tb="$tb elf32-spt2.lo elf32.lo $elf";;
+    spt3_elf64_vec)		 tb="$tb elf64-spt3.lo elf64.lo $elf"; want64=true; target_size=64 ;;
     sym_vec)			 tb="$tb xsym.lo" ;;
     tic30_aout_vec)		 tb="$tb aout-tic30.lo" ;;
     tic30_coff_vec)		 tb="$tb coff-tic30.lo $coffgen" ;;

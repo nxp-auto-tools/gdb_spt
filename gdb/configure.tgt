@@ -601,12 +601,18 @@ spu*-*-*)
 	build_gdbserver=yes
 	;;
 	
-spt*-*)
-	# Target: SPT
-	gdb_target_obs="spt-tdep.o"
+spt2*-*)
+	# Target: SPT2
+	gdb_target_obs="spt2-tdep.o"
+	#gdb_sim=../sim/spt/libsim.a
+	;;	
+spt3*-*)
+	# Target: SPT3
+	gdb_target_obs="spt3-tdep.o"
 	#gdb_sim=../sim/spt/libsim.a
 	;;	
 
+	
 tic6x-*-*linux)
 	# Target: GNU/Linux TI C6x
 	gdb_target_obs="tic6x-tdep.o tic6x-linux-tdep.o solib-dsbt.o \

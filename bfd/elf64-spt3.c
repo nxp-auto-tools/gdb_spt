@@ -23,16 +23,21 @@
 #include "libbfd.h"
 #include "elf-bfd.h"
 
-/* This does not include any relocations, but should be good enough
-   for GDB.  */
+//#define ARCH_SIZE 64
 
-#define TARGET_BIG_SYM		spt_elf32_vec
-#define TARGET_BIG_NAME		"elf32-spt"
-#define ELF_ARCH		bfd_arch_spt
-#define ELF_MACHINE_CODE	EM_SPT 
+
+#undef  TARGET_LITTLE_SYM
+#define TARGET_LITTLE_SYM spt3_elf64_vec
+#undef  TARGET_LITTLE_NAME
+#define TARGET_LITTLE_NAME "elf64-spt3"
+#define ELF_ARCH		bfd_arch_spt3
+#define ELF_MACHINE_CODE	183 //EM_SPT 
 #define ELF_MAXPAGESIZE  	1 /* FIXME: This number is wrong,  It should be the page size in bytes.  */
-#define bfd_elf32_bfd_reloc_type_lookup bfd_default_reloc_type_lookup
-#define bfd_elf32_bfd_reloc_name_lookup _bfd_norelocs_bfd_reloc_name_lookup
+#define bfd_elf64_bfd_reloc_type_lookup bfd_default_reloc_type_lookup
+#define bfd_elf64_bfd_reloc_name_lookup _bfd_norelocs_bfd_reloc_name_lookup
 #define elf_info_to_howto		_bfd_elf_no_info_to_howto
+//#define elf_info_to_howto		elf32_spt_info_to_howto//_bfd_elf_no_info_to_howto
+//#define elf_info_to_howto_rel		elf32_spt_info_to_howto_rel
 
-#include "elf32-target.h"
+
+#include "elf64-target.h"

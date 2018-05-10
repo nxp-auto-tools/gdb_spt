@@ -855,7 +855,8 @@ extern const bfd_target sparc_elf64_fbsd_vec;
 extern const bfd_target sparc_elf64_sol2_vec;
 extern const bfd_target sparc_nlm32_vec;
 extern const bfd_target spu_elf32_vec;
-extern const bfd_target spt_elf32_vec;
+extern const bfd_target spt2_elf32_vec;
+extern const bfd_target spt3_elf64_vec;
 extern const bfd_target sym_vec;
 extern const bfd_target tic30_aout_vec;
 extern const bfd_target tic30_coff_vec;
@@ -1377,9 +1378,9 @@ static const bfd_target * const _bfd_target_vector[] =
 	&sparc_elf64_sol2_vec,
 #endif
 	&sparc_nlm32_vec,
-
 	&spu_elf32_vec,
-	&spt_elf32_vec,
+	&spt2_elf32_vec,
+	&spt3_elf64_vec,
 	&sym_vec,
 
 	&tic30_aout_vec,
@@ -1722,6 +1723,7 @@ bfd_get_target_info (const char *target_name, bfd *abfd,
 		     int *underscoring, const char **def_target_arch)
 {
   const bfd_target *target_vec;
+  fprintf (stderr,_("Target name is %s"),target_name);
 
   if (is_bigendian)
     *is_bigendian = FALSE;

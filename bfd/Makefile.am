@@ -155,6 +155,8 @@ ALL_MACHINES = \
 	cpu-score.lo \
 	cpu-sh.lo \
 	cpu-sparc.lo \
+	cpu-spt2.lo \
+	cpu-spt3.lo \
 	cpu-spu.lo \
 	cpu-tic30.lo \
 	cpu-tic4x.lo \
@@ -243,6 +245,8 @@ ALL_MACHINES_CFILES = \
 	cpu-score.c \
 	cpu-sh.c \
 	cpu-sparc.c \
+	cpu-spt2.c \
+	cpu-spt3.c \
 	cpu-spu.c \
 	cpu-tic30.c \
 	cpu-tic4x.c \
@@ -657,6 +661,7 @@ BFD32_BACKENDS_CFILES = \
 # elf32-ia64.c requires a 64-bit bfd_vma, and hence can not be put in
 # BFD32_BACKENDS.
 BFD64_BACKENDS = \
+	elf64-spt3.lo \
 	elf32-aarch64.lo \
 	elf64-aarch64.lo \
 	elfxx-aarch64.lo \
@@ -706,6 +711,7 @@ BFD64_BACKENDS_CFILES = \
 	coff-x86_64.c \
 	coff64-rs6000.c \
 	demo64.c \
+	elf64-spt3.c\
 	elf32-mips.c \
 	elf32-score.c \
 	elf32-score7.c \

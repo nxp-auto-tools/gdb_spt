@@ -18,7 +18,7 @@
 #include "regcache.h"
 #include "gdbarch.h"
 #include "gdbserver/tdesc.h"
-#include "spt-tdep.h"
+#include "spt3-tdep.h"
 #include "features/spt.c"
 #include "safe-ctype.h"
 #include "block.h"
@@ -44,13 +44,13 @@
 /* The gdbarch_tdep structure.  */
 
 static CORE_ADDR
-spt_skip_prologue (struct gdbarch *gdbarch, CORE_ADDR start_pc)
+spt3_skip_prologue (struct gdbarch *gdbarch, CORE_ADDR start_pc)
 {
   return 0;
 }
 
 static const gdb_byte *
-spt_breakpoint_from_pc (struct gdbarch *gdbarch, CORE_ADDR *pc, int *len)
+spt3_breakpoint_from_pc (struct gdbarch *gdbarch, CORE_ADDR *pc, int *len)
 {
   static const gdb_byte break_insn[] = { 0x91 };
 
@@ -60,7 +60,7 @@ spt_breakpoint_from_pc (struct gdbarch *gdbarch, CORE_ADDR *pc, int *len)
 
 
 static const char *
-spt_register_name (struct gdbarch *gdbarch, int regnum)
+spt3_register_name (struct gdbarch *gdbarch, int regnum)
 {
   /*
   if (regnum >= 0 && regnum < SPARC32_NUM_REGS)
@@ -73,7 +73,7 @@ spt_register_name (struct gdbarch *gdbarch, int regnum)
 }
 
 static struct type *
-spt_register_type (struct gdbarch *arch,
+spt3_register_type (struct gdbarch *arch,
 		    int             regnum)
 {
   //TODO:
@@ -84,7 +84,7 @@ spt_register_type (struct gdbarch *arch,
 
 
 static void
-spt_registers_info (struct gdbarch    *gdbarch,
+spt3_registers_info (struct gdbarch    *gdbarch,
 		     struct ui_file    *file,
 		     struct frame_info *frame,
 		     int                regnum,
@@ -169,7 +169,7 @@ spu_software_single_step (struct frame_info *frame)
 */
 
 static CORE_ADDR
-spt_read_pc (struct regcache *regcache)
+spt3_read_pc (struct regcache *regcache)
 {
   struct gdbarch_tdep *tdep = gdbarch_tdep (get_regcache_arch (regcache));
   ULONGEST pc;
@@ -179,7 +179,7 @@ spt_read_pc (struct regcache *regcache)
 }
 
 static void
-spt_write_pc (struct regcache *regcache, CORE_ADDR pc)
+spt3_write_pc (struct regcache *regcache, CORE_ADDR pc)
 {
   /* Keep interrupt enabled state unchanged.  */
   ULONGEST old_pc;
@@ -190,7 +190,7 @@ spt_write_pc (struct regcache *regcache, CORE_ADDR pc)
 
 
 static CORE_ADDR
-spt_unwind_pc (struct gdbarch *gdbarch, struct frame_info *this_frame)
+spt3_unwind_pc (struct gdbarch *gdbarch, struct frame_info *this_frame)
 {
   CORE_ADDR pc
     = frame_unwind_register_unsigned (this_frame, SPT_PC_REGNUM);
@@ -199,7 +199,7 @@ spt_unwind_pc (struct gdbarch *gdbarch, struct frame_info *this_frame)
 }
 
 
-struct spt_unwind_cache
+struct spt3_unwind_cache
 {
   /* The frame's base, optionally used by the high-level debug info.  */
   CORE_ADDR base;
@@ -214,7 +214,7 @@ struct spt_unwind_cache
 
 
 static void
-spt_setup_default (struct spt_unwind_cache *cache)
+spt3_setup_default (struct spt3_unwind_cache *cache)
 {
   /*
   int i;
@@ -225,19 +225,19 @@ spt_setup_default (struct spt_unwind_cache *cache)
 }
 
 /* Frame base handling.  */
-static struct spt_unwind_cache *
-spt_frame_unwind_cache (struct frame_info *this_frame, void **this_cache)
+static struct spt3_unwind_cache *
+spt3_frame_unwind_cache (struct frame_info *this_frame, void **this_cache)
 {
   struct gdbarch *gdbarch = get_frame_arch (this_frame);
-  struct spt_unwind_cache *cache;
+  struct spt3_unwind_cache *cache;
   CORE_ADDR current_pc;
 
   if (*this_cache != NULL)
-    return (struct spt_unwind_cache *) *this_cache;
+    return (struct spt3_unwind_cache *) *this_cache;
 
-  cache = FRAME_OBSTACK_ZALLOC (struct spt_unwind_cache);
+  cache = FRAME_OBSTACK_ZALLOC (struct spt3_unwind_cache);
   (*this_cache) = cache;
-  spt_setup_default (cache);
+  spt3_setup_default (cache);
 
   cache->pc = get_frame_func (this_frame);
   current_pc = get_frame_pc (this_frame);
@@ -250,11 +250,11 @@ spt_frame_unwind_cache (struct frame_info *this_frame, void **this_cache)
 
 
 static void
-spt_frame_this_id (struct frame_info *this_frame,
+spt3_frame_this_id (struct frame_info *this_frame,
 			  void **this_cache, struct frame_id *this_id)
 {
-  struct spt_unwind_cache *cache =
-     spt_frame_unwind_cache (this_frame, this_cache);
+  struct spt3_unwind_cache *cache =
+     spt3_frame_unwind_cache (this_frame, this_cache);
 
   /* This marks the outermost frame.  */
   if (cache->base == 0)
@@ -265,11 +265,11 @@ spt_frame_this_id (struct frame_info *this_frame,
 
 
 static struct value *
-spt_frame_prev_register (struct frame_info *this_frame,
+spt3_frame_prev_register (struct frame_info *this_frame,
 			  void **this_cache, int regnum)
 {
-  struct spt_unwind_cache *cache =
-	spt_frame_unwind_cache (this_frame, this_cache);
+  struct spt3_unwind_cache *cache =
+	spt3_frame_unwind_cache (this_frame, this_cache);
   CORE_ADDR noFrame;
   int i;
 
@@ -288,12 +288,12 @@ spt_frame_prev_register (struct frame_info *this_frame,
 }
 
  
- static const struct frame_unwind spt_frame_unwind =
+ static const struct frame_unwind spt3_frame_unwind =
 {
   NORMAL_FRAME,
   default_frame_unwind_stop_reason,
-  spt_frame_this_id,
-  spt_frame_prev_register,
+  spt3_frame_this_id,
+  spt3_frame_prev_register,
   NULL,
   default_frame_sniffer
 };
@@ -301,7 +301,7 @@ spt_frame_prev_register (struct frame_info *this_frame,
 
 
 static struct gdbarch *
-spt_gdbarch_init (struct gdbarch_info info,
+spt3_gdbarch_init (struct gdbarch_info info,
 		   struct gdbarch_list *arches)
 {
       
@@ -313,7 +313,7 @@ spt_gdbarch_init (struct gdbarch_info info,
   if (arches != NULL)
     return arches->gdbarch;
 
-
+info.byte_order_for_code = BFD_ENDIAN_LITTLE;
 /* Allocate space for the new architecture.  */
   gdbarch = gdbarch_alloc (&info, NULL);
 
@@ -327,30 +327,31 @@ spt_gdbarch_init (struct gdbarch_info info,
     /* Information about the target architecture */
   //set_gdbarch_return_value          (gdbarch, apex_return_value);
  // set_gdbarch_breakpoint_from_pc    (gdbarch, apex_breakpoint_from_pc);
-  set_gdbarch_bits_big_endian 	    (gdbarch, BFD_ENDIAN_LITTLE);
+ //set_gdbarch_bits_big_endian 	    (gdbarch, BFD_ENDIAN_LITTLE);
+
   set_gdbarch_num_regs (gdbarch, 1);
 
     /* Internal <-> external register number maps.  */
   //set_gdbarch_dwarf2_reg_to_regnum (gdbarch, apex_dwarf_reg_to_regnum);
 
   /* Functions to supply register information */
-  set_gdbarch_register_name         (gdbarch, spt_register_name);
-  set_gdbarch_register_type         (gdbarch, spt_register_type);
-  set_gdbarch_print_registers_info  (gdbarch, spt_registers_info);
+  set_gdbarch_register_name         (gdbarch, spt3_register_name);
+  set_gdbarch_register_type         (gdbarch, spt3_register_type);
+  set_gdbarch_print_registers_info  (gdbarch, spt3_registers_info);
 
   /* Frame handling.  */
-  set_gdbarch_unwind_pc (gdbarch, spt_unwind_pc);
+  set_gdbarch_unwind_pc (gdbarch, spt3_unwind_pc);
  // set_gdbarch_unwind_sp (gdbarch, apex_unwind_sp);  
-  frame_unwind_append_unwinder (gdbarch, &spt_frame_unwind);
+  frame_unwind_append_unwinder (gdbarch, &spt3_frame_unwind);
 
   /* Functions to analyse frames */
-  set_gdbarch_skip_prologue         (gdbarch, spt_skip_prologue);
+  set_gdbarch_skip_prologue         (gdbarch, spt3_skip_prologue);
   set_gdbarch_inner_than            (gdbarch, core_addr_lessthan);
-  set_gdbarch_breakpoint_from_pc (gdbarch, spt_breakpoint_from_pc);
+  set_gdbarch_breakpoint_from_pc (gdbarch, spt3_breakpoint_from_pc);
   set_gdbarch_pc_regnum (gdbarch, SPT_PC_REGNUM);
   
-  set_gdbarch_read_pc (gdbarch, spt_read_pc);
-  set_gdbarch_write_pc (gdbarch, spt_write_pc);
+  set_gdbarch_read_pc (gdbarch, spt3_read_pc);
+  set_gdbarch_write_pc (gdbarch, spt3_write_pc);
 
   /*Associates registers description with arch*/
  // tdesc_use_registers (gdbarch, tdesc, tdesc_data);
@@ -376,7 +377,7 @@ spt_gdbarch_init (struct gdbarch_info info,
    @param[in] file     Where to dump the data */
 /*---------------------------------------------------------------------------*/
 static void
-spt_dump_tdep (struct gdbarch *gdbarch,
+spt3_dump_tdep (struct gdbarch *gdbarch,
 		struct ui_file *file)
 {
   struct gdbarch_tdep *tdep = gdbarch_tdep (gdbarch);
@@ -399,12 +400,12 @@ spt_dump_tdep (struct gdbarch *gdbarch,
    registers. */
 /*---------------------------------------------------------------------------*/
 
-extern initialize_file_ftype _initialize_spt_tdep; /* -Wmissing-prototypes */
+extern initialize_file_ftype _initialize_spt3_tdep; /* -Wmissing-prototypes */
 
 void
-_initialize_spt_tdep (void)
+_initialize_spt3_tdep (void)
 {
-	  gdbarch_register (bfd_arch_spt, spt_gdbarch_init, spt_dump_tdep);
+	  gdbarch_register (bfd_arch_spt3, spt3_gdbarch_init, spt3_dump_tdep);
 	  /* Tell remote stub that we support XML target description.  */
 	  //register_remote_support_xml ("spt");//really need it ???
 
