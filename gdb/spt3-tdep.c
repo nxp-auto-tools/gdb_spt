@@ -327,7 +327,7 @@ info.byte_order_for_code = BFD_ENDIAN_LITTLE;
     /* Information about the target architecture */
   //set_gdbarch_return_value          (gdbarch, apex_return_value);
  // set_gdbarch_breakpoint_from_pc    (gdbarch, apex_breakpoint_from_pc);
- //set_gdbarch_bits_big_endian 	    (gdbarch, BFD_ENDIAN_LITTLE);
+ set_gdbarch_bits_big_endian 	    (gdbarch, BFD_ENDIAN_LITTLE);
 
   set_gdbarch_num_regs (gdbarch, 1);
 
@@ -362,7 +362,7 @@ info.byte_order_for_code = BFD_ENDIAN_LITTLE;
 
 
   /* instruction set printer */
-  set_gdbarch_print_insn (gdbarch, print_insn_spt);
+  set_gdbarch_print_insn (gdbarch, print_insn_spt3);
 
 
   return gdbarch;

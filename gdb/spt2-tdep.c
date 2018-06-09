@@ -362,7 +362,7 @@ info.byte_order_for_code = BFD_ENDIAN_LITTLE;
 
 
   /* instruction set printer */
-  set_gdbarch_print_insn (gdbarch, print_insn_spt);
+  set_gdbarch_print_insn (gdbarch, print_insn_spt2);
 
 
   return gdbarch;

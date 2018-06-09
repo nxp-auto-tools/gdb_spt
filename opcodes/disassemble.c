@@ -81,7 +81,8 @@
 #define ARCH_sh
 #define ARCH_sparc
 #define ARCH_spu
-#define ARCH_spt
+#define ARCH_spt2
+#define ARCH_spt3
 #define ARCH_tic30
 #define ARCH_tic4x
 #define ARCH_tic54x
@@ -422,11 +423,16 @@ disassembler (bfd *abfd)
       disassemble = print_insn_spu;
       break;
 #endif
-#ifdef ARCH_spt
-    case bfd_arch_spt:
-      disassemble = print_insn_spt;
+#ifdef ARCH_spt2
+    case bfd_arch_spt2:
+      disassemble = print_insn_spt2;
       break;
 #endif
+#ifdef ARCH_spt3
+    case bfd_arch_spt3:
+      disassemble = print_insn_spt3;
+      break;
+#endif     
 #ifdef ARCH_tic30
     case bfd_arch_tic30:
       disassemble = print_insn_tic30;

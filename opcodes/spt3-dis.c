@@ -10,7 +10,7 @@
 
 
 
-#include "spt-dis.h"
+#include "spt3-dis.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -34,7 +34,13 @@ static unsigned int  insn[4];
 	static const int size = 16;
 	
 
-
+char * getBIns(INSN_, char * insName){
+	static	char  buff[20];
+	memset(buff, 0, sizeof(buff));
+	if (((x0 >> 24) & 0xfc) >> 4 == 3)sprintf(buff, "%sb", insName);
+	else sprintf(buff, "%s", insName);
+	return buff;
+}
 	
 	
 
@@ -116,8 +122,10 @@ char * getSrcAddWr(INSN_){
 char * getSrc2Add(INSN_){
 	static char buffa[10];
 	memset(buffa, 0, sizeof(buffa));
-	unsigned int src2_add_wr = ((x2 & 0xff80000) >> 19);
-	sprintf(buffa, "WR_%d", src2_add_wr);
+	int bank = ((x2 & 0x30000000) >> 28);
+	int slice = ((x2 & 0xfff0000) >> 16);
+	if (bank)sprintf(buffa, "spr(0,0,%d)",  slice);
+	else sprintf(buffa, "wr(0,0,%d)", slice);
 	return buffa;
 }
 
@@ -140,18 +148,30 @@ char *  getMcaMode(INSN_){
 
 
 void convertAddr(char *buff,int  mode, int bank, int col, int slice){
+		slice += ((col & 1) << 3);
+		col = ((bank & 1) << 8) + (col >> 1);
+		bank = bank >> 1;
+	
 	switch (mode) {
-	case 0:
-		sprintf(buff, "WR_%d", col);
+	  case 0:
+			if (bank)sprintf(buff, "spr(0,0,%d)", (col << 3) + slice);
+			else sprintf(buff, "wr(0,0,%d)", (col << 3) + slice);
 		break;
 	case 1:
-		sprintf(buff, "TR_%d_%d", col, slice);
+		sprintf(buff, "tr(%d,%d,%d)", bank, col, slice);
 		break;
 	case 2:
-		sprintf(buff, "OR_%d_%d_%d", bank, col, slice);
+		 sprintf(buff, "or(%d,%d,%d)", bank, col, slice);
+		break;
+	case 3:		
+		sprintf(buff, "or(%d,%d,%d)", 2+bank, col, slice);
+
 		break;
 	}
 }
+
+
+
 
 
 char *  getShftOffset(INSN_){
@@ -195,17 +215,7 @@ char *  getSrcAdd(INSN_){
 	 int src_add_col = ((x1 & 0xff80000) >> 19);
 	 int src_add_slice = ((x1 & 0x70000) >> 16);
 	memset(buff, 0, sizeof(buff));
-	switch (src_add_mode) {
-	case 0:
-		sprintf(buff, "WR_%d", src_add_col);
-		break;
-	case 1:
-		sprintf(buff, "TR_%d_%d", src_add_col, src_add_slice);
-		break;
-	case 2:
-		sprintf(buff, "OR_%d_%d_%d", src_add_bank, src_add_col, src_add_slice);
-		break;
-	}
+	convertAddr(buff, src_add_mode, src_add_bank, src_add_col, src_add_slice);
 	return buff;
 }
 
@@ -240,7 +250,7 @@ char * sptAddInstruction_dis()
 	mod_val = getModVal( INSN_F);
 	shift = getShift_s(INSN_F);
 	if (Immed){
-		sprintf(outbuff, "add.immed %s %s %s, %s, %s", shift, mod_val, getSrcAdd(INSN_F), getImmDat(INSN_F), getDestAdd(INSN_F));
+		sprintf(outbuff, "add %s %s %s, #%s, %s", shift, mod_val, getSrcAdd(INSN_F), getImmDat(INSN_F), getDestAdd(INSN_F));
 	}
 	else{
 		sprintf(outbuff, "add %s %s %s, %s, %s", shift, mod_val, getSrcAdd(INSN_F), getSrc2Add(INSN_F), getDestAdd(INSN_F));
@@ -879,11 +889,12 @@ char * sptSelInstruction_dis()
 	 
 	char re_im_lst[][10] = { ".im",".re" };
 	int re_im = ((insn[0] & 0x2000000) >> 25);
-	int sel_wr = ((insn[1] & 0x1f80000) >> 19);
+	int sel_wr = ((insn[1] & 0x3f0000) >> 16);
 	mod_val = getModVal(INSN_F);
 	shift = getShift_s(INSN_F);
-	sprintf(outbuff, "sel %s %d  %s %s, %s, %s", re_im_lst[re_im], sel_wr, getDestAdd(INSN_F), getSrc1Add(INSN_F), getSrc2Add(INSN_F), getSrc3Add(INSN_F));
+	sprintf(outbuff, "sel %s WR_%d  %s %s, %s, %s", re_im_lst[re_im], sel_wr, getDestAdd(INSN_F), getSrc1Add(INSN_F), getSrc2Add(INSN_F), getSrc3Add(INSN_F));
 	return  outbuff;
+
 }
 
 
@@ -921,7 +932,7 @@ char * sptSubInstruction_dis()
 	mod_val = getModVal(INSN_F);
 	shift = getShift_s(INSN_F);
 	if (Immed){
-		sprintf(outbuff, "sub.immed %s %s %s, %s, %s", shift, mod_val, getSrcAdd(INSN_F), getImmDat(INSN_F), getDestAdd(INSN_F));
+		sprintf(outbuff, "sub %s %s %s, #%s, %s", shift, mod_val, getSrcAdd(INSN_F), getImmDat(INSN_F), getDestAdd(INSN_F));
 	}
 	else{
 		sprintf(outbuff, "sub %s %s %s, %s, %s", shift, mod_val, getSrcAdd(INSN_F), getSrc2Add(INSN_F), getDestAdd(INSN_F));
@@ -945,9 +956,29 @@ char * sptWaitInstruction_dis()
 
 char * sptSyncInstruction_dis()
 {
-	return  "sync";
+	int sync_type=((insn[0] & 0x3000000) >> 24);
+	int cs_id = ((insn[3] & 0x1f));
+	switch (sync_type){
+	case 0: sprintf(outbuff, "sync");
+		  break;
+	case 1:sprintf(outbuff, "sync.pdma %d ", cs_id);
+		  break;
+	case 2:sprintf(outbuff, "sync.thread %d ", cs_id);
+		break;
+	case 3:sprintf(outbuff, "sync.dsp");
+		 break;
+	}
+	return  outbuff;
+
 }
 
+char * sptThreadInstruction_dis()
+{
+	int th_id = (insn[3] & 0xf) >> 1;
+	if (th_id > 2) th_id = 3;
+	sprintf(outbuff, "thread .thd_scs%d", th_id);
+	return outbuff;
+}
 
 
 char * sptVmtInstruction_dis()
@@ -1083,7 +1114,7 @@ char * sptWinInstruction_dis()
 }
 	
 char * sptDisassemle(){
-/*
+/*int temp_val;
      for(int i =0;i<4;i++)
 	{
 	insn[i] = *ins;
@@ -1162,6 +1193,9 @@ char * sptDisassemle(){
 	case OPCODE_RDX4:
 		return  sptRdx4Instruction_dis();
 		break;
+	case OPCODE_THREAD:
+		return  sptThreadInstruction_dis();
+		break;		
 	case OPCODE_VMT:
 		return  sptVmtInstruction_dis();
 		break;
@@ -1185,8 +1219,8 @@ char * sptDisassemle(){
 
 
 int
-print_insn_spt(bfd_vma pc  ATTRIBUTE_UNUSED, disassemble_info *info  ATTRIBUTE_UNUSED){
-int bigendian =1;
+print_insn_spt3(bfd_vma pc  ATTRIBUTE_UNUSED, disassemble_info *info  ATTRIBUTE_UNUSED){
+int bigendian =0;
   bfd_byte buffer[16];
  // unsigned  insn[4];
   
@@ -1209,10 +1243,10 @@ int bigendian =1;
     insn[2] = bfd_getb32 (buffer +2*4);
     insn[3] = bfd_getb32 (buffer +3*4);
   } else {
-    insn[0] = bfd_getl32 (buffer +0*4);
-    insn[1] = bfd_getl32 (buffer +1*4);
-    insn[2] = bfd_getl32 (buffer +2*4);
-    insn[3] = bfd_getl32 (buffer +3*4);
+    insn[3] = bfd_getl32 (buffer +0*4);
+    insn[2] = bfd_getl32 (buffer +1*4);
+    insn[1] = bfd_getl32 (buffer +2*4);
+    insn[0] = bfd_getl32 (buffer +3*4);
   }
   int sz = 16;
   (*info->fprintf_func) (info->stream, (sptDisassemle()) );
