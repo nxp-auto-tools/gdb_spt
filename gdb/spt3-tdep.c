@@ -62,14 +62,14 @@ spt3_breakpoint_from_pc (struct gdbarch *gdbarch, CORE_ADDR *pc, int *len)
 static const char *
 spt3_register_name (struct gdbarch *gdbarch, int regnum)
 {
-  /*
-  if (regnum >= 0 && regnum < SPARC32_NUM_REGS)
-    return sparc32_register_names[regnum];
+  static char t_buf[10];
+  if (regnum == SPT_PC_REGNUM )return "pc";
 
-  if (regnum < SPARC32_NUM_REGS + SPARC32_NUM_PSEUDO_REGS)
-    return sparc32_pseudo_register_names[regnum - SPARC32_NUM_REGS];*/
+  //return "wr_0";
+  sprintf(t_buf,"wr_%d",regnum-1);
+  if (regnum < SPT_REGNUM ) return t_buf;
 
-  return "pc";
+  return "unknown";
 }
 
 static struct type *
@@ -77,7 +77,8 @@ spt3_register_type (struct gdbarch *arch,
 		    int             regnum)
 {
   //TODO:
-  return builtin_type (arch)->builtin_uint32;
+  if (regnum == SPT_PC_REGNUM )return builtin_type (arch)->builtin_uint32;
+  else return builtin_type (arch)->builtin_uint64;
 }
 
 
@@ -329,7 +330,7 @@ info.byte_order_for_code = BFD_ENDIAN_LITTLE;
  // set_gdbarch_breakpoint_from_pc    (gdbarch, apex_breakpoint_from_pc);
  set_gdbarch_bits_big_endian 	    (gdbarch, BFD_ENDIAN_LITTLE);
 
-  set_gdbarch_num_regs (gdbarch, 1);
+  set_gdbarch_num_regs (gdbarch, SPT_REGNUM);
 
     /* Internal <-> external register number maps.  */
   //set_gdbarch_dwarf2_reg_to_regnum (gdbarch, apex_dwarf_reg_to_regnum);
