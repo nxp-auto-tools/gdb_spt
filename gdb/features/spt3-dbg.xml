@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE target SYSTEM "gdb-target.dtd">
+<feature name="spt3-dbg-regs">
+  <reg name="gbl_ctrl"  bitsize="32" type="uint32"/>
+  <reg name="cs_pg_st_addr"  bitsize="32" type="uint32"/>
+  <reg name="cs_mode_ctrl"  bitsize="32" type="uint32"/>
+  <reg name="cs_wd_status"  bitsize="32" type="uint32"/>
+  <reg name="cs_bkpt0_addr"  bitsize="32" type="uint32"/>
+  <reg name="cs_bkpt1_addr"  bitsize="32" type="uint32"/>
+  <reg name="cs_bkpt2_addr"  bitsize="32" type="uint32"/>
+  <reg name="cs_bkpt3_addr"  bitsize="32" type="uint32"/>
+  <reg name="cs_jam_inst0"  bitsize="32" type="uint32"/>
+  <reg name="cs_jam_inst1"  bitsize="32" type="uint32"/>
+  <reg name="cs_jam_inst2" bitsize="32" type="uint32"/>
+  <reg name="cs_jam_inst3" bitsize="32" type="uint32"/>
+  <reg name="pc" bitsize="32" type="uint32"/>
+  <reg name="cs_curr_inst0" bitsize="32" type="uint32"/>
+  <reg name="cs_curr_inst1" bitsize="32" type="uint32"/>
+  <reg name="cs_curr_inst2" bitsize="32" type="uint32"/>
+  <reg name="cs_curr_inst3" bitsize="32" type="uint32"/>
+</feature>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE target SYSTEM "gdb-target.dtd">
+<feature name="spt3-work-regs">
+  	<reg bitsize="64" name="wr0" type="uint64" />
+    <reg bitsize="64" name="wr1" type="uint64" />
+    <reg bitsize="64" name="wr2" type="uint64" />
+    <reg bitsize="64" name="wr3" type="uint64" />
+    <reg bitsize="64" name="wr4" type="uint64" />
+    <reg bitsize="64" name="wr5" type="uint64" />
+    <reg bitsize="64" name="wr6" type="uint64" />
+    <reg bitsize="64" name="wr7" type="uint64" />
+    <reg bitsize="64" name="wr8" type="uint64" />
+    <reg bitsize="64" name="wr9" type="uint64" />
+    <reg bitsize="64" name="wr10" type="uint64" />
+    <reg bitsize="64" name="wr11" type="uint64" />
+    <reg bitsize="64" name="wr12" type="uint64" />
+    <reg bitsize="64" name="wr13" type="uint64" />
+    <reg bitsize="64" name="wr14" type="uint64" />
+    <reg bitsize="64" name="wr15" type="uint64" />
+    <reg bitsize="64" name="wr16" type="uint64" />
+    <reg bitsize="64" name="wr17" type="uint64" />
+    <reg bitsize="64" name="wr18" type="uint64" />
+    <reg bitsize="64" name="wr19" type="uint64" />
+    <reg bitsize="64" name="wr20" type="uint64" />
+    <reg bitsize="64" name="wr21" type="uint64" />
+    <reg bitsize="64" name="wr22" type="uint64" />
+    <reg bitsize="64" name="wr23" type="uint64" />
+    <reg bitsize="64" name="wr24" type="uint64" />
+    <reg bitsize="64" name="wr25" type="uint64" />
+    <reg bitsize="64" name="wr26" type="uint64" />
+    <reg bitsize="64" name="wr27" type="uint64" />
+    <reg bitsize="64" name="wr28" type="uint64" />
+    <reg bitsize="64" name="wr29" type="uint64" />
+    <reg bitsize="64" name="wr30" type="uint64" />
+    <reg bitsize="64" name="wr31" type="uint64" />
+    <reg bitsize="64" name="wr32" type="uint64" />
+    <reg bitsize="64" name="wr33" type="uint64" />
+    <reg bitsize="64" name="wr34" type="uint64" />
+    <reg bitsize="64" name="wr35" type="uint64" />
+    <reg bitsize="64" name="wr36" type="uint64" />
+    <reg bitsize="64" name="wr37" type="uint64" />
+    <reg bitsize="64" name="wr38" type="uint64" />
+    <reg bitsize="64" name="wr39" type="uint64" />
+    <reg bitsize="64" name="wr40" type="uint64" />
+    <reg bitsize="64" name="wr41" type="uint64" />
+    <reg bitsize="64" name="wr42" type="uint64" />
+    <reg bitsize="64" name="wr43" type="uint64" />
+    <reg bitsize="64" name="wr44" type="uint64" />
+    <reg bitsize="64" name="wr45" type="uint64" />
+    <reg bitsize="64" name="wr46" type="uint64" />
+    <reg bitsize="64" name="wr47" type="uint64" />
+</feature>

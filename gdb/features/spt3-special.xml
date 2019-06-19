@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE target SYSTEM "gdb-target.dtd">
+<feature name="spt3-special-regs">
+    <reg bitsize="64" name="spr0" type="uint64" />
+    <reg bitsize="64" name="spr1" type="uint64" />
+    <reg bitsize="64" name="spr2" type="uint64" />
+    <reg bitsize="64" name="spr3" type="uint64" />
+    <reg bitsize="64" name="spr4" type="uint64" />
+    <reg bitsize="64" name="spr5" type="uint64" />
+    <reg bitsize="64" name="spr6" type="uint64" />
+    <reg bitsize="64" name="spr7" type="uint64" />
+</feature>

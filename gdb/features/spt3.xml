@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE target SYSTEM "gdb-target.dtd">
+<target version="1.0">
+  <architecture>spt3</architecture>
+  <xi:include href="spt3-dbg.xml"/>
+  <xi:include href="spt3-work.xml"/>
+  <xi:include href="spt3-special.xml"/>
+</target>

@@ -19,7 +19,7 @@
 #include "gdbarch.h"
 #include "gdbserver/tdesc.h"
 #include "spt3-tdep.h"
-#include "features/spt.c"
+#include "features/spt3.c"
 #include "safe-ctype.h"
 #include "block.h"
 #include "reggroups.h"
@@ -58,16 +58,21 @@ spt3_breakpoint_from_pc (struct gdbarch *gdbarch, CORE_ADDR *pc, int *len)
   return break_insn;
 }
 
+static const char *const spt3_dbg_register_names[] = {"gbl_ctrl","cs_pg_st_addr","cs_mode_ctrl","cs_wd_status","cs_bkpt0_addr","cs_bkpt1_addr","cs_bkpt2_addr","cs_bkpt3_addr","cs_jam_inst0","cs_jam_inst1","cs_jam_inst2","cs_jam_inst3","pc","cs_curr_inst0","cs_curr_inst1","cs_curr_inst2","cs_curr_inst3"};
+static const char *const spt3_work_register_names[] = {"wr0","wr1","wr2","wr3","wr4","wr5","wr6","wr7","wr8","wr9","wr10","wr11","wr12","wr13","wr14","wr15","wr16","wr17","wr18","wr19","wr20","wr21","wr22","wr23","wr24","wr25","wr26","wr27","wr28","wr29","wr30","wr31","wr32","wr33","wr34","wr35","wr36","wr37","wr38","wr39","wr40","wr41","wr42","wr43","wr44","wr45","wr46","wr47"};
+static const char *const spt3_special_register_names[] = {"spr0","spr1","spr2","spr3","spr4","spr5","spr6","spr7"};
 
 static const char *
 spt3_register_name (struct gdbarch *gdbarch, int regnum)
 {
   static char t_buf[10];
-  if (regnum == SPT_PC_REGNUM )return "pc";
+  if (regnum == SPT3_PC_REGNUM )return "pc";
 
   //return "wr_0";
-  sprintf(t_buf,"wr_%d",regnum-1);
-  if (regnum < SPT_REGNUM ) return t_buf;
+  if (regnum <= 64 ){
+  	sprintf(t_buf,"wr_%d",regnum-1);
+	return t_buf;
+  }
 
   return "unknown";
 }
@@ -77,12 +82,11 @@ spt3_register_type (struct gdbarch *arch,
 		    int             regnum)
 {
   //TODO:
-  if (regnum == SPT_PC_REGNUM )return builtin_type (arch)->builtin_uint32;
-  else return builtin_type (arch)->builtin_uint64;
+  if (regnum <= 16)
+	return builtin_type (arch)->builtin_uint32;
+  else
+	return builtin_type (arch)->builtin_uint64;
 }
-
-
-
 
 static void
 spt3_registers_info (struct gdbarch    *gdbarch,
@@ -95,86 +99,12 @@ spt3_registers_info (struct gdbarch    *gdbarch,
   return;
 }
 
-
-/* Software single-stepping support.  */
-/*
-static int
-spu_software_single_step (struct frame_info *frame)
-{
-  struct gdbarch *gdbarch = get_frame_arch (frame);
-  struct address_space *aspace = get_frame_address_space (frame);
-  enum bfd_endian byte_order = gdbarch_byte_order (gdbarch);
-  CORE_ADDR pc, next_pc;
-  unsigned int insn;
-  int offset, reg;
-  gdb_byte buf[4];
-  ULONGEST lslr;
-
-  pc = get_frame_pc (frame);
-
-  if (target_read_memory (pc, buf, 4))
-    throw_error (MEMORY_ERROR, _("Could not read instruction at %s."),
-		 paddress (gdbarch, pc));
-
-  insn = extract_unsigned_integer (buf, 4, byte_order);
-
-  // Get local store limit.  
-  lslr = get_frame_register_unsigned (frame, SPU_LSLR_REGNUM);
-  if (!lslr)
-    lslr = (ULONGEST) -1;
-
-
-  if ((insn & 0xffffff00) == 0x00002100)
-    next_pc = (SPUADDR_ADDR (pc) + 8) & lslr;
-  else
-    next_pc = (SPUADDR_ADDR (pc) + 4) & lslr;
-
-  insert_single_step_breakpoint (gdbarch,
-				 aspace, SPUADDR (SPUADDR_SPU (pc), next_pc));
-
-  if (is_branch (insn, &offset, &reg))
-    {
-      CORE_ADDR target = offset;
-
-      if (reg == SPU_PC_REGNUM)
-	target += SPUADDR_ADDR (pc);
-      else if (reg != -1)
-	{
-	  int optim, unavail;
-
-	  if (get_frame_register_bytes (frame, reg, 0, 4, buf,
-					 &optim, &unavail))
-	    target += extract_unsigned_integer (buf, 4, byte_order) & -4;
-	  else
-	    {
-	      if (optim)
-		throw_error (OPTIMIZED_OUT_ERROR,
-			     _("Could not determine address of "
-			       "single-step breakpoint."));
-	      if (unavail)
-		throw_error (NOT_AVAILABLE_ERROR,
-			     _("Could not determine address of "
-			       "single-step breakpoint."));
-	    }
-	}
-
-      target = target & lslr;
-      if (target != next_pc)
-	insert_single_step_breakpoint (gdbarch, aspace,
-				       SPUADDR (SPUADDR_SPU (pc), target));
-    }
-
-  return 1;
-}
-
-*/
-
 static CORE_ADDR
 spt3_read_pc (struct regcache *regcache)
 {
   struct gdbarch_tdep *tdep = gdbarch_tdep (get_regcache_arch (regcache));
   ULONGEST pc;
-  regcache_cooked_read_unsigned (regcache, SPT_PC_REGNUM, &pc);
+  regcache_cooked_read_unsigned (regcache, SPT3_PC_REGNUM, &pc);
   /* Mask off interrupt enable bit.  */
   return  pc;
 }
@@ -185,8 +115,8 @@ spt3_write_pc (struct regcache *regcache, CORE_ADDR pc)
   /* Keep interrupt enabled state unchanged.  */
   ULONGEST old_pc;
 
-  regcache_cooked_read_unsigned (regcache, SPT_PC_REGNUM, &old_pc);
-  regcache_cooked_write_unsigned (regcache, SPT_PC_REGNUM,old_pc);
+  regcache_cooked_read_unsigned (regcache, SPT3_PC_REGNUM, &old_pc);
+  regcache_cooked_write_unsigned (regcache, SPT3_PC_REGNUM,old_pc);
 }
 
 
@@ -194,7 +124,7 @@ static CORE_ADDR
 spt3_unwind_pc (struct gdbarch *gdbarch, struct frame_info *this_frame)
 {
   CORE_ADDR pc
-    = frame_unwind_register_unsigned (this_frame, SPT_PC_REGNUM);
+    = frame_unwind_register_unsigned (this_frame, SPT3_PC_REGNUM);
 
   return pc;
 }
@@ -275,15 +205,9 @@ spt3_frame_prev_register (struct frame_info *this_frame,
   int i;
 
   /* If we are asked to unwind the PC, then we need to unwind PC ? */
-  if (regnum == SPT_PC_REGNUM)
+  if (regnum == SPT3_PC_REGNUM)
       //return apex_prev_pc_register(this_frame);
 	  return frame_unwind_got_register(this_frame,regnum, regnum);
-
-  /* If we've worked out where a register is stored then load it from
-     there.  */
- /* if (regnum < APEX_ACP_REGS && cache->reg_saved[regnum] != -1)
-    return frame_unwind_got_memory (this_frame, regnum,
-				    cache->reg_saved[regnum]);*/
 
   return frame_unwind_got_register (this_frame, regnum, regnum);
 }
@@ -308,13 +232,72 @@ spt3_gdbarch_init (struct gdbarch_info info,
       
   struct gdbarch       *gdbarch;
 
+  /* If there is already a candidate, use it.  */
+   arches = gdbarch_list_lookup_by_info (arches, &info);
+   if (arches != NULL)
+     return arches->gdbarch;
 
-   /* If there is already a candidate, use it.  */
-  arches = gdbarch_list_lookup_by_info (arches, &info);
-  if (arches != NULL)
-    return arches->gdbarch;
+  struct tdesc_arch_data *tdesc_data = NULL;
+  const struct target_desc *tdesc = info.target_desc;
 
-info.byte_order_for_code = BFD_ENDIAN_LITTLE;
+const struct tdesc_feature *feature;
+
+  int i;
+  int valid_p = 1;
+
+
+  /* Ensure we always have a target descriptor.  */
+  if (!tdesc_has_registers (tdesc)){
+    //warning("tdesc has NO registers");
+    tdesc = tdesc_spt3;
+  }
+  gdb_assert (tdesc);
+
+	if (tdesc_has_registers(tdesc)) {
+		feature = tdesc_find_feature(tdesc, "spt3-dbg-regs");
+
+		if (feature == NULL) {
+			error("spt3_gdbarch_init: no feature spt3-dbg-regs");
+			return NULL;
+		}
+		tdesc_data = tdesc_data_alloc();
+
+		for (i = 0; i < SPT3_DBG_REGNUM; i++) {
+			valid_p &= tdesc_numbered_register(feature, tdesc_data, i,
+					spt3_dbg_register_names[i]);
+		}
+
+		if (!valid_p) {
+			tdesc_data_cleanup(tdesc_data);
+			return NULL;
+		}
+
+		feature = tdesc_find_feature(tdesc, "spt3-work-regs");
+		if (feature != NULL) {
+			valid_p = 1;
+			for (i = 0; i < SPT3_WORK_REGNUM; i++)
+				valid_p &= tdesc_numbered_register(feature, tdesc_data, i,
+						spt3_work_register_names[i]);
+			if (!valid_p) {
+				tdesc_data_cleanup(tdesc_data);
+				return NULL;
+			}
+		}
+		feature = tdesc_find_feature(tdesc, "spt3-special-regs");
+		if (feature != NULL) {
+			valid_p = 1;
+			for (i = 0; i < SPT3_SPECIAL_REGNUM; i++)
+				valid_p &= tdesc_numbered_register(feature, tdesc_data, i,
+						spt3_special_register_names[i]);
+			if (!valid_p) {
+				tdesc_data_cleanup(tdesc_data);
+				return NULL;
+			}
+		}
+
+	}
+
+  info.byte_order_for_code = BFD_ENDIAN_LITTLE;
 /* Allocate space for the new architecture.  */
   gdbarch = gdbarch_alloc (&info, NULL);
 
@@ -326,36 +309,32 @@ info.byte_order_for_code = BFD_ENDIAN_LITTLE;
   set_gdbarch_long_long_bit         (gdbarch, 64);
 
     /* Information about the target architecture */
-  //set_gdbarch_return_value          (gdbarch, apex_return_value);
- // set_gdbarch_breakpoint_from_pc    (gdbarch, apex_breakpoint_from_pc);
  set_gdbarch_bits_big_endian 	    (gdbarch, BFD_ENDIAN_LITTLE);
 
-  set_gdbarch_num_regs (gdbarch, SPT_REGNUM);
+  set_gdbarch_num_regs (gdbarch, SPT3_REGNUM);
 
     /* Internal <-> external register number maps.  */
-  //set_gdbarch_dwarf2_reg_to_regnum (gdbarch, apex_dwarf_reg_to_regnum);
 
   /* Functions to supply register information */
   set_gdbarch_register_name         (gdbarch, spt3_register_name);
   set_gdbarch_register_type         (gdbarch, spt3_register_type);
-  set_gdbarch_print_registers_info  (gdbarch, spt3_registers_info);
+  //set_gdbarch_print_registers_info  (gdbarch, spt3_registers_info);
 
   /* Frame handling.  */
   set_gdbarch_unwind_pc (gdbarch, spt3_unwind_pc);
- // set_gdbarch_unwind_sp (gdbarch, apex_unwind_sp);  
   frame_unwind_append_unwinder (gdbarch, &spt3_frame_unwind);
 
   /* Functions to analyse frames */
   set_gdbarch_skip_prologue         (gdbarch, spt3_skip_prologue);
   set_gdbarch_inner_than            (gdbarch, core_addr_lessthan);
   set_gdbarch_breakpoint_from_pc (gdbarch, spt3_breakpoint_from_pc);
-  set_gdbarch_pc_regnum (gdbarch, SPT_PC_REGNUM);
+  set_gdbarch_pc_regnum (gdbarch, SPT3_PC_REGNUM);
   
   set_gdbarch_read_pc (gdbarch, spt3_read_pc);
   set_gdbarch_write_pc (gdbarch, spt3_write_pc);
 
   /*Associates registers description with arch*/
- // tdesc_use_registers (gdbarch, tdesc, tdesc_data);
+  tdesc_use_registers (gdbarch, tdesc, tdesc_data);
  
  
 //set_gdbarch_software_single_step (gdbarch, spu_software_single_step);
@@ -407,9 +386,10 @@ void
 _initialize_spt3_tdep (void)
 {
 	  gdbarch_register (bfd_arch_spt3, spt3_gdbarch_init, spt3_dump_tdep);
+	  initialize_tdesc_spt3();
 	  /* Tell remote stub that we support XML target description.  */
-	  //register_remote_support_xml ("spt");//really need it ???
+	  register_remote_support_xml ("spt3");//really need it ???
 
 
-} /* _initialize_spt_tdep() */
+} /* _initialize_spt3_tdep() */
 
