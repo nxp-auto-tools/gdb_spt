@@ -14,6 +14,7 @@
   <reg name="cs_jam_inst1"  bitsize="32" type="uint32"/>
   <reg name="cs_jam_inst2" bitsize="32" type="uint32"/>
   <reg name="cs_jam_inst3" bitsize="32" type="uint32"/>
+  <reg name="cs_curr_inst_addr" bitsize="32" type="uint32" />
   <reg name="pc" bitsize="32" type="uint32"/>
   <reg name="cs_curr_inst0" bitsize="32" type="uint32"/>
   <reg name="cs_curr_inst1" bitsize="32" type="uint32"/>

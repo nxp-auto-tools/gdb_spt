@@ -9,13 +9,10 @@
 #define TARGET_SPT
 #endif
 
-#define SPT3_REGNUM 73
-#define SPT3_DBG_REGNUM 17
+#define SPT3_REGNUM 100
+#define SPT3_DBG_REGNUM 18
 #define SPT3_WORK_REGNUM 48
-#define SPT3_SPECIAL_REGNUM 8
-#define SPT3_PC_REGNUM 12
-
-
-
+#define SPT3_SPECIAL_REGNUM 34
+#define SPT3_PC_REGNUM 13
 
 #endif

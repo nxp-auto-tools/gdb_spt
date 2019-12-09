@@ -58,9 +58,7 @@ spt3_breakpoint_from_pc (struct gdbarch *gdbarch, CORE_ADDR *pc, int *len)
   return break_insn;
 }
 
-static const char *const spt3_dbg_register_names[] = {"gbl_ctrl","cs_pg_st_addr","cs_mode_ctrl","cs_wd_status","cs_bkpt0_addr","cs_bkpt1_addr","cs_bkpt2_addr","cs_bkpt3_addr","cs_jam_inst0","cs_jam_inst1","cs_jam_inst2","cs_jam_inst3","pc","cs_curr_inst0","cs_curr_inst1","cs_curr_inst2","cs_curr_inst3"};
-static const char *const spt3_work_register_names[] = {"wr0","wr1","wr2","wr3","wr4","wr5","wr6","wr7","wr8","wr9","wr10","wr11","wr12","wr13","wr14","wr15","wr16","wr17","wr18","wr19","wr20","wr21","wr22","wr23","wr24","wr25","wr26","wr27","wr28","wr29","wr30","wr31","wr32","wr33","wr34","wr35","wr36","wr37","wr38","wr39","wr40","wr41","wr42","wr43","wr44","wr45","wr46","wr47"};
-static const char *const spt3_special_register_names[] = {"spr0","spr1","spr2","spr3","spr4","spr5","spr6","spr7"};
+static const char *const spt3_register_names[] = {"gbl_ctrl","cs_pg_st_addr","cs_mode_ctrl","cs_wd_status","cs_bkpt0_addr","cs_bkpt1_addr","cs_bkpt2_addr","cs_bkpt3_addr","cs_jam_inst0","cs_jam_inst1","cs_jam_inst2","cs_jam_inst3","cs_curr_inst_addr","pc","cs_curr_inst0","cs_curr_inst1","cs_curr_inst2","cs_curr_inst3","wr0","wr1","wr2","wr3","wr4","wr5","wr6","wr7","wr8","wr9","wr10","wr11","wr12","wr13","wr14","wr15","wr16","wr17","wr18","wr19","wr20","wr21","wr22","wr23","wr24","wr25","wr26","wr27","wr28","wr29","wr30","wr31","wr32","wr33","wr34","wr35","wr36","wr37","wr38","wr39","wr40","wr41","wr42","wr43","wr44","wr45","wr46","wr47","spr0","spr1","spr2","spr3","spr4","spr5","spr6","spr7","spr8","spr9","hw_spr0","hw_spr1","hw_spr2","hw_spr3","hw_spr4","hw_spr5","evt_spr0","evt_spr1","evt_spr2","evt_spr3","evt_spr4","evt_spr5","evt_spr6","evt_spr7","evt_spr8","evt_spr9","chrp_spr0","chrp_spr1","chrp_spr2","chrp_spr3","chrp_spr4","chrp_spr5","chrp_spr6","chrp_spr7"};
 
 static const char *
 spt3_register_name (struct gdbarch *gdbarch, int regnum)
@@ -102,10 +100,8 @@ spt3_registers_info (struct gdbarch    *gdbarch,
 static CORE_ADDR
 spt3_read_pc (struct regcache *regcache)
 {
-  struct gdbarch_tdep *tdep = gdbarch_tdep (get_regcache_arch (regcache));
   ULONGEST pc;
-  regcache_cooked_read_unsigned (regcache, SPT3_PC_REGNUM, &pc);
-  /* Mask off interrupt enable bit.  */
+  regcache_raw_read_unsigned (regcache, SPT3_PC_REGNUM, &pc);
   return  pc;
 }
 
@@ -254,17 +250,17 @@ const struct tdesc_feature *feature;
   gdb_assert (tdesc);
 
 	if (tdesc_has_registers(tdesc)) {
+		tdesc_data = tdesc_data_alloc();
 		feature = tdesc_find_feature(tdesc, "spt3-dbg-regs");
 
 		if (feature == NULL) {
 			error("spt3_gdbarch_init: no feature spt3-dbg-regs");
 			return NULL;
 		}
-		tdesc_data = tdesc_data_alloc();
 
 		for (i = 0; i < SPT3_DBG_REGNUM; i++) {
 			valid_p &= tdesc_numbered_register(feature, tdesc_data, i,
-					spt3_dbg_register_names[i]);
+					spt3_register_names[i]);
 		}
 
 		if (!valid_p) {
@@ -275,20 +271,21 @@ const struct tdesc_feature *feature;
 		feature = tdesc_find_feature(tdesc, "spt3-work-regs");
 		if (feature != NULL) {
 			valid_p = 1;
-			for (i = 0; i < SPT3_WORK_REGNUM; i++)
+			for (i = SPT3_DBG_REGNUM; i < SPT3_DBG_REGNUM + SPT3_WORK_REGNUM; i++)
 				valid_p &= tdesc_numbered_register(feature, tdesc_data, i,
-						spt3_work_register_names[i]);
+						spt3_register_names[i]);
 			if (!valid_p) {
 				tdesc_data_cleanup(tdesc_data);
 				return NULL;
 			}
 		}
+
 		feature = tdesc_find_feature(tdesc, "spt3-special-regs");
 		if (feature != NULL) {
 			valid_p = 1;
-			for (i = 0; i < SPT3_SPECIAL_REGNUM; i++)
+			for (i = SPT3_DBG_REGNUM + SPT3_WORK_REGNUM; i < SPT3_REGNUM; i++)
 				valid_p &= tdesc_numbered_register(feature, tdesc_data, i,
-						spt3_special_register_names[i]);
+						spt3_register_names[i]);
 			if (!valid_p) {
 				tdesc_data_cleanup(tdesc_data);
 				return NULL;
@@ -343,7 +340,6 @@ const struct tdesc_feature *feature;
 
   /* instruction set printer */
   set_gdbarch_print_insn (gdbarch, print_insn_spt3);
-
 
   return gdbarch;
 } /* _gdbarch_init() */

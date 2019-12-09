@@ -10,4 +10,30 @@
     <reg bitsize="64" name="spr5" type="uint64" />
     <reg bitsize="64" name="spr6" type="uint64" />
     <reg bitsize="64" name="spr7" type="uint64" />
+    <reg bitsize="64" name="spr8" type="uint64" />
+    <reg bitsize="64" name="spr9" type="uint64" />
+    <reg bitsize="64" name="hw_spr0" type="uint64" />
+    <reg bitsize="64" name="hw_spr1" type="uint64" />
+    <reg bitsize="64" name="hw_spr2" type="uint64" />
+    <reg bitsize="64" name="hw_spr3" type="uint64" />
+    <reg bitsize="64" name="hw_spr4" type="uint64" />
+    <reg bitsize="64" name="hw_spr5" type="uint64" />
+    <reg bitsize="64" name="evt_spr0" type="uint64" />
+    <reg bitsize="64" name="evt_spr1" type="uint64" />
+    <reg bitsize="64" name="evt_spr2" type="uint64" />
+    <reg bitsize="64" name="evt_spr3" type="uint64" />
+    <reg bitsize="64" name="evt_spr4" type="uint64" />
+    <reg bitsize="64" name="evt_spr5" type="uint64" />
+    <reg bitsize="64" name="evt_spr6" type="uint64" />
+    <reg bitsize="64" name="evt_spr7" type="uint64" />
+    <reg bitsize="64" name="evt_spr8" type="uint64" />
+    <reg bitsize="64" name="evt_spr9" type="uint64" />
+    <reg bitsize="64" name="chrp_spr0" type="uint64" />
+    <reg bitsize="64" name="chrp_spr1" type="uint64" />
+    <reg bitsize="64" name="chrp_spr2" type="uint64" />
+    <reg bitsize="64" name="chrp_spr3" type="uint64" />
+    <reg bitsize="64" name="chrp_spr4" type="uint64" />
+    <reg bitsize="64" name="chrp_spr5" type="uint64" />
+    <reg bitsize="64" name="chrp_spr6" type="uint64" />
+    <reg bitsize="64" name="chrp_spr7" type="uint64" />
 </feature>

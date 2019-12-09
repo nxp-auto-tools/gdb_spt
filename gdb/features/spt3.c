@@ -28,6 +28,7 @@ static void initialize_tdesc_spt3(void) {
 	tdesc_create_reg(feature, "cs_jam_inst1", 9, 1, NULL, 32, "uint32");
 	tdesc_create_reg(feature, "cs_jam_inst2", 10, 1, NULL, 32, "uint32");
 	tdesc_create_reg(feature, "cs_jam_inst3", 11, 1, NULL, 32, "uint32");
+	tdesc_create_reg(feature, "cs_curr_inst_addr", 12, 1, NULL, 32, "uint32");
 	tdesc_create_reg(feature, "pc", 12, 1, NULL, 32, "uint32");
 	tdesc_create_reg(feature, "cs_curr_inst0", 13, 1, NULL, 32, "uint32");
 	tdesc_create_reg(feature, "cs_curr_inst1", 14, 1, NULL, 32, "uint32");
