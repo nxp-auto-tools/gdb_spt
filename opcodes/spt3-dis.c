@@ -273,7 +273,7 @@ char * sptCmpInstruction_dis()
 }
 
 
-char * sptCopyInstruction_dis()
+char * sptCopyInstruction_dis(bfd_boolean isBlockVersion)
 {
 	char cp_type_lst[][20] = { ".simple_copy", ".threshold_ge", ".threshold_lt", ".transpose_copy", ".copy_real_pack", ".copy_imag_pack",
 							".copy_unpack", ".partial_copy_real", ".partial_copy_imag", ".partial_copy_r2i", ".partial_copy_i2r", ".copy_clear",
@@ -322,7 +322,10 @@ char * sptCopyInstruction_dis()
 		strcat(dest_add, ",");
 	}
 
-	sprintf(outbuff, "copy%s %s %s  %s %d %s, %s %d, %d, %d, %d, %d", ind, in_dat_type, cp_type_lst[cp_type], rst_n_keep_lst[rst_n_keep], vec_sz, src_add, dest_add, blk_src_inc, blk_dest_inc, src_add_inc, dest_add_inc, mask);
+	if(isBlockVersion)
+		sprintf(outbuff, "copyb%s %s %s  %s %d %s, %s %d, %d, %d, %d, %d", ind, in_dat_type, cp_type_lst[cp_type], rst_n_keep_lst[rst_n_keep], vec_sz, src_add, dest_add, blk_src_inc, blk_dest_inc, src_add_inc, dest_add_inc, mask);
+	else
+		sprintf(outbuff, "copy%s %s %s  %s %d %s, %s %d, %d, %d, %d, %d", ind, in_dat_type, cp_type_lst[cp_type], rst_n_keep_lst[rst_n_keep], vec_sz, src_add, dest_add, blk_src_inc, blk_dest_inc, src_add_inc, dest_add_inc, mask);
 
 	
 	return  outbuff;
@@ -352,7 +355,7 @@ char * sptEvtInstruction_dis()
 
 
 
-char * sptFirInstruction_dis()
+char * sptFirInstruction_dis(bfd_boolean isBlockVersion)
 {
 	
 	char win_type_lst[][20] = { ".cmplx_win", ".cmplx_win", ".real_win_im_tram", ".real_win_real_tram" };
@@ -385,12 +388,14 @@ char * sptFirInstruction_dis()
 		strcat(dest_add, ",");
 	}
 
+	char *instr = isBlockVersion? "firb" : "fir";
+
 	if (!shft_src){	
-		sprintf(outbuff, "fir%s %s %s %s %s %d %d %s, %s %s, %d, %d", ind, in_dat_type, win_type_lst[win_type], init_lst[init], shft_val, no_of_taps, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
+		sprintf(outbuff, "%s%s %s %s %s %s %d %d %s, %s %s, %d, %d", instr, ind, in_dat_type, win_type_lst[win_type], init_lst[init], shft_val, no_of_taps, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
 	}
 	else
 	{
-		sprintf(outbuff, "fir.shift_wr%s %s %s %s %s %d %d %d %s, %s %s, %d, %d", ind, in_dat_type, win_type_lst[win_type], init_lst[init], shft_offs, shft_wr, no_of_taps, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
+		sprintf(outbuff, "%s.shift_wr%s %s %s %s %s %d %d %d %s, %s %s, %d, %d", instr, ind, in_dat_type, win_type_lst[win_type], init_lst[init], shft_offs, shft_wr, no_of_taps, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
 	}
 	
 	return  outbuff;
@@ -454,7 +459,7 @@ char * sptHistInstruction_dis()
 }
 
 
-char * sptIrdx2Instruction_dis()
+char * sptIrdx2Instruction_dis(bfd_boolean isBlockVersion)
 {
 	 
 	char quad_ext_lst[][10] = { ".noqext", ".qext" };
@@ -489,19 +494,21 @@ char * sptIrdx2Instruction_dis()
 		strcat(dest_add, ",");
 	}
 
+	char* instr = isBlockVersion? "irdx2b" : "irdx2";
+
 	if (adaptv){
 		if (!shft_src){
-			sprintf(outbuff, "irdx2.adaptv%s %s %s %s %s %s %s  %s %s %d %d %s, %s %s, %d, %d", ind, in_dat_type, quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, repeat_lst[repeat], shft_val, adaptv_shft_lst[adaptv_shft], getShftOffset(INSN_F), shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
+			sprintf(outbuff, "%s.adaptv%s %s %s %s %s %s %s  %s %s %d %d %s, %s %s, %d, %d", instr, ind, in_dat_type, quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, repeat_lst[repeat], shft_val, adaptv_shft_lst[adaptv_shft], getShftOffset(INSN_F), shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
 		}
-		else sprintf(outbuff, "irdx2.adaptv.shift_wr%s %s %s %s %s %s %s  %s %s %d %d %s, %s %s, %d, %d", ind, in_dat_type, quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, repeat_lst[repeat], shft_val, adaptv_shft_lst[adaptv_shft], getShftOffset(INSN_F), shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
+		else sprintf(outbuff, "%s.adaptv.shift_wr%s %s %s %s %s %s %s  %s %s %d %d %s, %s %s, %d, %d", instr, ind, in_dat_type, quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, repeat_lst[repeat], shft_val, adaptv_shft_lst[adaptv_shft], getShftOffset(INSN_F), shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
 	}
 	else{
 		if (!shft_src){
-			sprintf(outbuff, "irdx2%s %s %s %s %s %s %s %d %s, %s %s, %d, %d",ind, in_dat_type, quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, repeat_lst[repeat], shft_val, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);		
+			sprintf(outbuff, "%s%s %s %s %s %s %s %s %d %s, %s %s, %d, %d",instr , ind, in_dat_type, quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, repeat_lst[repeat], shft_val, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
 		}
 		else
 		{
-			sprintf(outbuff, "irdx2.shift_wr %s %s %s %s %s %s %d %d %s, %s, %s, %d, %d", in_dat_type, quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, repeat_lst[repeat], shft_offs, shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
+			sprintf(outbuff, "%s.shift_wr %s %s %s %s %s %s %d %d %s, %s, %s, %d, %d", instr, in_dat_type, quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, repeat_lst[repeat], shft_offs, shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
 		}
 	}	
 	return  outbuff;
@@ -509,7 +516,7 @@ char * sptIrdx2Instruction_dis()
 
 
 
-char * sptIrdx4Instruction_dis()
+char * sptIrdx4Instruction_dis(bfd_boolean isBlockVersion)
 {
 	 
 	char quad_ext_lst[][10] = { ".noqext", ".qext" };
@@ -552,24 +559,26 @@ char * sptIrdx4Instruction_dis()
 		strcat(dest_add, ",");
 	}
 
+	char* instr = isBlockVersion ? "irdx4b" : "irdx4";
+
 	if (adaptv){
-		sprintf(outbuff, "irdx4.adaptv%s %s %s %s %s %s %s %s %s %d %d %s, %s %s, %d, %d, %s, %d", ind, mult_mod_lst[mult_mod], in_dat_type, win_type_lst[win_type], repeat_lst[repeat], quad_ext_lst[quad_ext], getTwOvs(INSN_F), adaptv_shft_lst[adaptv_shft], shft_offs, shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc, mca_mode, mca_inc);
+		sprintf(outbuff, "%s.adaptv%s %s %s %s %s %s %s %s %s %d %d %s, %s %s, %d, %d, %s, %d", instr, ind, mult_mod_lst[mult_mod], in_dat_type, win_type_lst[win_type], repeat_lst[repeat], quad_ext_lst[quad_ext], getTwOvs(INSN_F), adaptv_shft_lst[adaptv_shft], shft_offs, shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc, mca_mode, mca_inc);
 	}
 	else
 	{
 	if (!shft_src){
 		if (mult_mod == 0)
 		{
-			sprintf(outbuff, "irdx4%s %s %s %s %s %s %s %s %d %s, %s %d, %d, %d, %d", ind, in_dat_type, win_type_lst[win_type], repeat_lst[repeat], quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, shft_val, vec_sz, src_add, dest_add, src_add_inc, dest_add_inc, cc_im, cc_re);
+			sprintf(outbuff, "%s%s %s %s %s %s %s %s %s %d %s, %s %d, %d, %d, %d", instr, ind, in_dat_type, win_type_lst[win_type], repeat_lst[repeat], quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, shft_val, vec_sz, src_add, dest_add, src_add_inc, dest_add_inc, cc_im, cc_re);
 		}
 		else//selected
 		{
-			sprintf(outbuff, "irdx4%s %s %s %s %s %s %s %s %d %s, %s %d, %d, %s, %d", ind, mult_mod_lst[mult_mod], in_dat_type, win_type_lst[win_type], repeat_lst[repeat], quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, vec_sz, src_add, dest_add, src_add_inc, dest_add_inc, mca_mode, mca_inc);
+			sprintf(outbuff, "%s%s %s %s %s %s %s %s %s %d %s, %s %d, %d, %s, %d", instr, ind, mult_mod_lst[mult_mod], in_dat_type, win_type_lst[win_type], repeat_lst[repeat], quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, vec_sz, src_add, dest_add, src_add_inc, dest_add_inc, mca_mode, mca_inc);
 		}
 	}
 	else
 	{
-		sprintf(outbuff, "irdx4.shift_wr%s %s %s %s %s %s %s %s %d %d %s, %s %s, %d, %d, %s, %d", ind, mult_mod_lst[mult_mod], in_dat_type, win_type_lst[win_type], repeat_lst[repeat], quad_ext_lst[quad_ext], getTwOvs(INSN_F), shft_offs, shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc, mca_mode, mca_inc);
+		sprintf(outbuff, "%s.shift_wr%s %s %s %s %s %s %s %s %d %d %s, %s %s, %d, %d, %s, %d", instr, ind, mult_mod_lst[mult_mod], in_dat_type, win_type_lst[win_type], repeat_lst[repeat], quad_ext_lst[quad_ext], getTwOvs(INSN_F), shft_offs, shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc, mca_mode, mca_inc);
 	}
 }
 	
@@ -613,7 +622,7 @@ sprintf(outbuff, "next");
 }
 
 
-char * sptMaxsInstruction_dis()
+char * sptMaxsInstruction_dis(bfd_boolean isBlockVersion)
 {
 	 
 	char preproc_lst[][15] = { ".no_pre",  ".abs_abs_proc",".abs_mag_proc" };
@@ -657,14 +666,15 @@ char * sptMaxsInstruction_dis()
 		strcat(dest_add, ",");
 	}
 
+	char *instr = isBlockVersion? "maxsb" : "maxs";
 
 	if (loc)
 			{
-				sprintf(outbuff, "maxs%s %s %s %s %s %s %s %s %s %d %s, %s %d, %d, 0x%x", ind, in_dat_type, preproc_lst[preproc], thld_cmp_lst[thld_cmp], in_tag_lst[in_tag], tag_n_lst[tag_n], cyc_extn_lst[cyc_extn], in_pack_lst[in_pack], maxsn_sel_lst[maxsn_sel], vec_sz, src_add, dest_add, src_add_inc, dest_add_inc, thld_add);
+				sprintf(outbuff, "%s%s %s %s %s %s %s %s %s %s %d %s, %s %d, %d, 0x%x", instr, ind, in_dat_type, preproc_lst[preproc], thld_cmp_lst[thld_cmp], in_tag_lst[in_tag], tag_n_lst[tag_n], cyc_extn_lst[cyc_extn], in_pack_lst[in_pack], maxsn_sel_lst[maxsn_sel], vec_sz, src_add, dest_add, src_add_inc, dest_add_inc, thld_add);
 			}
 			else//selected
 			{
-				sprintf(outbuff, "maxs.gbl%s %s %s %s %s %d %s, %s %d, %d, 0x%x", ind, in_dat_type, preproc_lst[preproc], in_pack_lst[in_pack], maxsn_sel_lst[maxsn_sel], vec_sz, src_add, dest_add, src_add_inc, dest_add_inc, thld_add);
+				sprintf(outbuff, "%s.gbl%s %s %s %s %s %d %s, %s %d, %d, 0x%x", instr, ind, in_dat_type, preproc_lst[preproc], in_pack_lst[in_pack], maxsn_sel_lst[maxsn_sel], vec_sz, src_add, dest_add, src_add_inc, dest_add_inc, thld_add);
 			}
 	return  outbuff;
 }
@@ -705,7 +715,7 @@ char * sptPdmaInstruction_dis()
 
 
 
-char * sptRdx2Instruction_dis()
+char * sptRdx2Instruction_dis(bfd_boolean isBlockVersion)
 {
 	 
 	char quad_ext_lst[][10] = { ".noqext", ".qext" };
@@ -743,24 +753,26 @@ char * sptRdx2Instruction_dis()
 		strcat(dest_add, ",");
 	}
 
+	char *instr = isBlockVersion? "rdx2b" : "rdx2";
+
 	if (adaptv){
 		if (!shft_src){
-			sprintf(outbuff, "rdx2.adaptv%s %s %s %s %s %s %s %s %s %s %d %d %s, %s %s %d, %d", ind, in_dat_type, quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, repeat_lst[repeat], real_fft_lst[real_fft], shft_val, adaptv_shft_lst[adaptv_shft], getShftOffset(INSN_F), shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
+			sprintf(outbuff, "%s.adaptv%s %s %s %s %s %s %s %s %s %s %d %d %s, %s %s %d, %d", instr, ind, in_dat_type, quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, repeat_lst[repeat], real_fft_lst[real_fft], shft_val, adaptv_shft_lst[adaptv_shft], getShftOffset(INSN_F), shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
 		}
 		else
 		{//shft_wr
-			sprintf(outbuff, "rdx2.adaptv.shift_wr%s %s %s %s %s %s %s %s %d %d %s, %s %s %d, %d", ind, in_dat_type, quad_ext_lst[quad_ext], getTwOvs(INSN_F), repeat_lst[repeat], real_fft_lst[real_fft],  adaptv_shft_lst[adaptv_shft], getShftOffset(INSN_F), shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
+			sprintf(outbuff, "%s.adaptv.shift_wr%s %s %s %s %s %s %s %s %d %d %s, %s %s %d, %d", instr, ind, in_dat_type, quad_ext_lst[quad_ext], getTwOvs(INSN_F), repeat_lst[repeat], real_fft_lst[real_fft],  adaptv_shft_lst[adaptv_shft], getShftOffset(INSN_F), shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
 		}
 	}
 	else
 	{
 		if (!shft_src){
 
-			sprintf(outbuff, "rdx2%s %s %s %s %s %s %s %s %d %s, %s %s %d, %d", ind, in_dat_type, quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, repeat_lst[repeat], real_fft_lst[real_fft], shft_val, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
+			sprintf(outbuff, "%s%s %s %s %s %s %s %s %s %d %s, %s %s %d, %d", instr, ind, in_dat_type, quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, repeat_lst[repeat], real_fft_lst[real_fft], shft_val, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
 		}
 		else//selected
 		{
-			sprintf(outbuff, "rdx2.shift_wr%s %s %s %s %s %s %s %s %d %d %s, %s %s %d, %d", ind, in_dat_type, quad_ext_lst[quad_ext], getTwOvs(INSN_F), repeat_lst[repeat], real_fft_lst[real_fft], adaptv_shft_lst[adaptv_shft], getShftOffset(INSN_F), shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
+			sprintf(outbuff, "%s.shift_wr%s %s %s %s %s %s %s %s %d %d %s, %s %s %d, %d", instr, ind, in_dat_type, quad_ext_lst[quad_ext], getTwOvs(INSN_F), repeat_lst[repeat], real_fft_lst[real_fft], adaptv_shft_lst[adaptv_shft], getShftOffset(INSN_F), shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
 		}
 	}
 	return  outbuff;
@@ -768,7 +780,7 @@ char * sptRdx2Instruction_dis()
 
 
 
-char * sptRdx4Instruction_dis()
+char * sptRdx4Instruction_dis(bfd_boolean isBlockVersion)
 {
 	 
 	char quad_ext_lst[][10] = { ".noqext", ".qext" };
@@ -810,12 +822,14 @@ char * sptRdx4Instruction_dis()
 		strcat(dest_add, ",");
 	}
 
+	char *instr = isBlockVersion ? "rdx4b" : "rdx4";
+
 	if (adaptv){
 		if (!shft_src){
-			sprintf(outbuff, "rdx4.adaptv%s %s %s %s %s %s %s %s %s %d %d %s, %s %s, %d, %d, %s, %d", ind, mult_mod_lst[mult_mod], in_dat_type, win_type_lst[win_type], repeat_lst[repeat], quad_ext_lst[quad_ext], getTwOvs(INSN_F), adaptv_shft_lst[adaptv_shft], shft_offs, shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc, mca_mode, mca_inc);
+			sprintf(outbuff, "%s.adaptv%s %s %s %s %s %s %s %s %s %d %d %s, %s %s, %d, %d, %s, %d", instr, ind, mult_mod_lst[mult_mod], in_dat_type, win_type_lst[win_type], repeat_lst[repeat], quad_ext_lst[quad_ext], getTwOvs(INSN_F), adaptv_shft_lst[adaptv_shft], shft_offs, shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc, mca_mode, mca_inc);
 		}
 		else{
-			sprintf(outbuff, "rdx4.adaptv.shift_wr%s %s %s %s %s %s %s %s %s %d %d %s, %s %s, %d, %d, %s, %d", ind, mult_mod_lst[mult_mod], in_dat_type, win_type_lst[win_type], repeat_lst[repeat], quad_ext_lst[quad_ext], getTwOvs(INSN_F), adaptv_shft_lst[adaptv_shft], shft_offs, shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc, mca_mode, mca_inc);
+			sprintf(outbuff, "%s.adaptv.shift_wr%s %s %s %s %s %s %s %s %s %d %d %s, %s %s, %d, %d, %s, %d", instr, ind, mult_mod_lst[mult_mod], in_dat_type, win_type_lst[win_type], repeat_lst[repeat], quad_ext_lst[quad_ext], getTwOvs(INSN_F), adaptv_shft_lst[adaptv_shft], shft_offs, shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc, mca_mode, mca_inc);
 
 		}
 	}
@@ -824,16 +838,16 @@ char * sptRdx4Instruction_dis()
 		if (!shft_src){
 			if (mult_mod == 0)
 			{
-				sprintf(outbuff, "rdx4%s %s %s %s %s %s %s %s %d %s, %s %d, %d, %d, %d", ind, in_dat_type, win_type_lst[win_type], repeat_lst[repeat], quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, shft_val, vec_sz, src_add, dest_add, src_add_inc, dest_add_inc, cc_im, cc_re);
+				sprintf(outbuff, "%s%s %s %s %s %s %s %s %s %d %s, %s %d, %d, %d, %d", instr, ind, in_dat_type, win_type_lst[win_type], repeat_lst[repeat], quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, shft_val, vec_sz, src_add, dest_add, src_add_inc, dest_add_inc, cc_im, cc_re);
 			}
 			else//selected
 			{
-				sprintf(outbuff, "rdx4%s %s %s %s %s %s %s %s %d %s, %s %d, %d, %s, %d", ind, mult_mod_lst[mult_mod], in_dat_type, win_type_lst[win_type], repeat_lst[repeat], quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, vec_sz, src_add, dest_add, src_add_inc, dest_add_inc, mca_mode, mca_inc);
+				sprintf(outbuff, "%s%s %s %s %s %s %s %s %s %d %s, %s %d, %d, %s, %d", instr, ind, mult_mod_lst[mult_mod], in_dat_type, win_type_lst[win_type], repeat_lst[repeat], quad_ext_lst[quad_ext], getTwOvs(INSN_F), fft_rnd, vec_sz, src_add, dest_add, src_add_inc, dest_add_inc, mca_mode, mca_inc);
 			}
 		}
 		else
 		{
-			sprintf(outbuff, "rdx4.shift_wr%s %s %s %s %s %s %s %s %d %d %s, %s %s, %d, %d, %s, %d", ind, mult_mod_lst[mult_mod], in_dat_type, win_type_lst[win_type], repeat_lst[repeat], quad_ext_lst[quad_ext], getTwOvs(INSN_F), shft_offs, shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc, mca_mode, mca_inc);
+			sprintf(outbuff, "%s.shift_wr%s %s %s %s %s %s %s %s %d %d %s, %s %s, %d, %d, %s, %d", instr, ind, mult_mod_lst[mult_mod], in_dat_type, win_type_lst[win_type], repeat_lst[repeat], quad_ext_lst[quad_ext], getTwOvs(INSN_F), shft_offs, shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc, mca_mode, mca_inc);
 		}
 	}	
 	return  outbuff;
@@ -841,7 +855,7 @@ char * sptRdx4Instruction_dis()
 
 
 
-char * sptScpInstruction_dis()
+char * sptScpInstruction_dis(bfd_boolean isBlockVersion)
 {
 	 
 	char re_im_coeff_lst[][20] = { ".coef_cmplx", ".coef_cmplx", ".coef_im", ".coef_re" };
@@ -869,13 +883,15 @@ char * sptScpInstruction_dis()
 		strcat(dest_add, ",");
 	}
 
+	char* instr = isBlockVersion ? "scpb" : "scp";
+
 	if (!shft_src){
-		sprintf(outbuff, "scp%s %s  %s %s %d %d %s, %s %s, %d, %d", ind, in_dat_type, re_im_coeff_lst[re_im_coeff], shft_val, num_of_taps,
+		sprintf(outbuff, "%s%s %s  %s %s %d %d %s, %s %s, %d, %d", instr, ind, in_dat_type, re_im_coeff_lst[re_im_coeff], shft_val, num_of_taps,
 			vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
 	}
 	else
 	{
-		sprintf(outbuff, "scp.shift_wr%s %s  %s %s %d %d %d %s, %s %s, %d, %d", ind, in_dat_type, re_im_coeff_lst[re_im_coeff], shft_offs, shft_wr, num_of_taps,
+		sprintf(outbuff, "%s.shift_wr%s %s  %s %s %d %d %d %s, %s %s, %d, %d", instr, ind, in_dat_type, re_im_coeff_lst[re_im_coeff], shft_offs, shft_wr, num_of_taps,
 			vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc);
 	}
 	return  outbuff;
@@ -1063,7 +1079,7 @@ char * sptWatchdogInstruction_dis()
 }
 
 
-char * sptWinInstruction_dis()
+char * sptWinInstruction_dis(bfd_boolean isBlockVersion)
 {
 	 
 	char win_type_lst[][20] = { ".cmplx_win", ".cmplx_win", ".real_win_im_tram", ".real_win_real_tram" };
@@ -1096,19 +1112,21 @@ char * sptWinInstruction_dis()
 		strcat(dest_add, ",");
 	}
 
+	char *instr = isBlockVersion? "winb" : "win";
+
 	if (!shft_src){
 		if (mult_mod == 0)
 		{
-		 sprintf(outbuff, "win%s %s %s %s %d %s, %s %d, %d, %d, %d",ind, in_dat_type, win_type_lst[win_type], shft_val, vec_sz, src_add, dest_add, src_add_inc, dest_add_inc, cc_im, cc_re);
+		 sprintf(outbuff, "%s%s %s %s %s %d %s, %s %d, %d, %d, %d",instr, ind, in_dat_type, win_type_lst[win_type], shft_val, vec_sz, src_add, dest_add, src_add_inc, dest_add_inc, cc_im, cc_re);
 		}
 		else//selected
 		{
-		 sprintf(outbuff, "win%s %s %s %s %s %d %s, %s, %s, %d, %d, %s, %d",ind, mult_mod_lst[mult_mod], in_dat_type, win_type_lst[win_type], shft_val, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc, mca_mode, mca_inc);
+		 sprintf(outbuff, "%s%s %s %s %s %s %d %s, %s, %s, %d, %d, %s, %d",instr, ind, mult_mod_lst[mult_mod], in_dat_type, win_type_lst[win_type], shft_val, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc, mca_mode, mca_inc);
 		}
 	}
 	else
 	{
-		 sprintf(outbuff, "win.shift_wr%s %s %s %s %s %d %d %s, %s %s, %d, %d, %s, %d",ind, mult_mod_lst[mult_mod], in_dat_type, win_type_lst[win_type], shft_offs, shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc, mca_mode, mca_inc);
+		 sprintf(outbuff, "%s.shift_wr%s %s %s %s %s %d %d %s, %s %s, %d, %d, %s, %d",instr, ind, mult_mod_lst[mult_mod], in_dat_type, win_type_lst[win_type], shft_offs, shft_wr, vec_sz, src_add, dest_add, getMultCoefAdd(INSN_F), src_add_inc, dest_add_inc, mca_mode, mca_inc);
 	}
 	return  outbuff;
 }
@@ -1140,7 +1158,10 @@ char * sptDisassemle(){
 		return sptAddInstruction_dis();
 		break;
 	case OPCODE_COPY:
-		return sptCopyInstruction_dis();
+		return sptCopyInstruction_dis(FALSE);
+		break;
+	case OPCODE_COPYB:
+		return sptCopyInstruction_dis(TRUE);
 		break;
 	case OPCODE_STOP:
 		return  sptStopInstruction_dis();
@@ -1164,34 +1185,55 @@ char * sptDisassemle(){
 		return  sptCmpInstruction_dis();
 		break;
 	case OPCODE_FIR:
-		return  sptFirInstruction_dis();
+		return  sptFirInstruction_dis(FALSE);
+		break;
+	case OPCODE_FIRB:
+		return  sptFirInstruction_dis(TRUE);
 		break;
 	case OPCODE_HIST:
 		return  sptHistInstruction_dis();
 		break;
 	case OPCODE_IRDX2:
-		return  sptIrdx2Instruction_dis();
+		return  sptIrdx2Instruction_dis(FALSE);
+		break;
+	case OPCODE_IRDX2B:
+		return  sptIrdx2Instruction_dis(TRUE);
 		break;
 	case OPCODE_IRDX4:
-		return  sptIrdx4Instruction_dis();
+		return  sptIrdx4Instruction_dis(FALSE);
+		break;
+	case OPCODE_IRDX4B:
+		return  sptIrdx4Instruction_dis(TRUE);
 		break;
 	case OPCODE_MAXS:
-		return  sptMaxsInstruction_dis();
+		return  sptMaxsInstruction_dis(FALSE);
+		break;
+	case OPCODE_MAXSB:
+		return  sptMaxsInstruction_dis(TRUE);
 		break;
 	case OPCODE_PDMA:
 		return  sptPdmaInstruction_dis();
 		break;
 	case OPCODE_SCP:
-		return  sptScpInstruction_dis();
+		return  sptScpInstruction_dis(FALSE);
+		break;
+	case OPCODE_SCPB:
+		return  sptScpInstruction_dis(TRUE);
 		break;
 	case OPCODE_SEL:
 		return  sptSelInstruction_dis();
 		break;
 	case OPCODE_RDX2:
-		return  sptRdx2Instruction_dis();
+		return  sptRdx2Instruction_dis(FALSE);
+		break;
+	case OPCODE_RDX2B:
+		return  sptRdx2Instruction_dis(TRUE);
 		break;
 	case OPCODE_RDX4:
-		return  sptRdx4Instruction_dis();
+		return  sptRdx4Instruction_dis(FALSE);
+		break;
+	case OPCODE_RDX4B:
+		return  sptRdx4Instruction_dis(TRUE);
 		break;
 	case OPCODE_THREAD:
 		return  sptThreadInstruction_dis();
@@ -1203,7 +1245,10 @@ char * sptDisassemle(){
 		return  sptWatchdogInstruction_dis();
 		break;
 	case OPCODE_WIN:
-		return  sptWinInstruction_dis();
+		return  sptWinInstruction_dis(FALSE);
+		break;
+	case OPCODE_WINB:
+		return  sptWinInstruction_dis(TRUE);
 		break;
 
 	default:

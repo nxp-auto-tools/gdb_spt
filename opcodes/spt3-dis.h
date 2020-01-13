@@ -43,7 +43,6 @@
 #define OPCODE_RDX2B 0x33
 #define OPCODE_COPYB 0x35
 #define OPCODE_MAXSB 0x37
-
 #define OPCODE_FIRB 0x39
 #define OPCODE_SCPB 0x3A
 #define OPCODE_IRDX4B 0x3B
