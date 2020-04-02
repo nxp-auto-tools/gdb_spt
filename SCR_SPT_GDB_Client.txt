@@ -16,6 +16,6 @@ GDB Client for SPT          Description: GDB Client for SPT
                             Home Page: None
                             License: BSD 3-clause "New" or "Revised" License
                             Format: binary
-                            Location: gdb-7.12-spt						  
+                            Location: gdb-7.12-spt3
 
 [end]
