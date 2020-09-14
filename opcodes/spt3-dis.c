@@ -1130,6 +1130,13 @@ char * sptWinInstruction_dis(bfd_boolean isBlockVersion)
 	}
 	return  outbuff;
 }
+
+char * sptDspInstruction_dis()
+{
+	char* isBlocking = ((insn[0] >> 25) & 0x1) ? ".blocking" : ".non-blocking";
+	sprintf(outbuff, "dsp %s 0x%x 0x%x 0x%x 0x%x",isBlocking, (insn[0] & 0x1FFFFFF), insn[1], insn[2], insn[3]);
+	return outbuff;
+}
 	
 char * sptDisassemle(){
 /*int temp_val;
@@ -1249,6 +1256,9 @@ char * sptDisassemle(){
 		break;
 	case OPCODE_WINB:
 		return  sptWinInstruction_dis(TRUE);
+		break;
+	case OPCODE_DSP:
+		return sptDspInstruction_dis();
 		break;
 
 	default:
