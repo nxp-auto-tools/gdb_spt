@@ -1137,6 +1137,13 @@ char * sptDspInstruction_dis()
 	sprintf(outbuff, "dsp %s 0x%x 0x%x 0x%x 0x%x",isBlocking, (insn[0] & 0x1FFFFFF), insn[1], insn[2], insn[3]);
 	return outbuff;
 }
+
+char * sptRepeatInstruction_dis()
+{
+	int rptCnt = insn[0] & 0x1FFF;
+	sprintf(outbuff, "repeat 0x%x 0x%x 0x%x 0x%x 0x%x",rptCnt, (insn[2] >> 16) & 0xFFFF, insn[2] & 0xFFFF, (insn[3] >> 16) & 0xFFFF, insn[3] & 0xFFFF);
+	return outbuff;
+}
 	
 char * sptDisassemle(){
 /*int temp_val;
@@ -1259,6 +1266,9 @@ char * sptDisassemle(){
 		break;
 	case OPCODE_DSP:
 		return sptDspInstruction_dis();
+		break;
+	case OPCODE_REPEAT:
+		return sptRepeatInstruction_dis();
 		break;
 
 	default:
