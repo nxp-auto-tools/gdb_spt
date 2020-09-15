@@ -114,7 +114,7 @@ unsigned char  getSrc(INSN_){
 char * getSrcAddWr(INSN_){
 	static char buff[10];
 	memset(buff, 0, sizeof(buff));
-	int src_add_wr = ((x1 & 0x3ff80000) >> 19);
+	int src_add_wr = ((x1 & 0xffff0000) >> 16);
 	sprintf(buff, "WR_%d", src_add_wr);
 	return buff;
 }
@@ -1144,6 +1144,33 @@ char * sptRepeatInstruction_dis()
 	sprintf(outbuff, "repeat 0x%x 0x%x 0x%x 0x%x 0x%x",rptCnt, (insn[2] >> 16) & 0xFFFF, insn[2] & 0xFFFF, (insn[3] >> 16) & 0xFFFF, insn[3] & 0xFFFF);
 	return outbuff;
 }
+
+char * sptSortInstruction_dis(bfd_boolean isBlockVersion)
+{	char *reserved = "";
+	char *instr = isBlockVersion? "sortb" : "sort";
+	char *in_dattyp[4] = { ".real", ".cmplx", ".log2", reserved};
+	char *preproc[4] = {".no_preproc",".abs_proc",".mag_proc",reserved};
+	char *in_pack[3] = {".in_24real",".in_24im",".in_48packed"};
+	char *set_size[4] = {".ss4",".ss8",".ss16",reserved};
+
+	int in_dattyp_flag = (insn[0] >> 24) & 0x3;
+	int preproc_flag = (insn[0] >> 22) & 0x3;
+	int in_pack_flag = (insn[0] >> 14) & 0x3;
+	int ima_flag = (insn[0] >> 13) & 0x3;
+	int vec_sz = insn[0] & 0x1FFF;
+	int src_add_inc = (insn[2] >> 8) & 0xFF;
+	int dest_add_inc = insn[2] & 0xFF;
+	int sort_rank_flag = (insn[3] >> 18) & 0xF;
+	int set_size_flag = (insn[3] >> 16) & 0x3;
+
+	if(ima_flag){
+		sprintf(outbuff, "%s.ind %s %s %s %s,%d,%s,%d,%d", instr, in_dattyp[in_dattyp_flag], preproc[preproc_flag], set_size[set_size_flag], in_pack[in_pack_flag], vec_sz, getSrcAddWr(INSN_F), src_add_inc, dest_add_inc);
+	}else{
+		sprintf(outbuff, "%s %s %s %s %s,%d,%s,%s,%d,%d", instr, in_dattyp[in_dattyp_flag], preproc[preproc_flag], set_size[set_size_flag], in_pack[in_pack_flag], vec_sz, getSrcAdd(INSN_F), getDestAdd(INSN_F), src_add_inc, dest_add_inc);
+	}
+
+	return outbuff;
+}
 	
 char * sptDisassemle(){
 /*int temp_val;
@@ -1269,6 +1296,12 @@ char * sptDisassemle(){
 		break;
 	case OPCODE_REPEAT:
 		return sptRepeatInstruction_dis();
+		break;
+	case OPCODE_SORT:
+		return sptSortInstruction_dis(FALSE);
+		break;
+	case OPCODE_SORTB:
+		return sptSortInstruction_dis(TRUE);
 		break;
 
 	default:
