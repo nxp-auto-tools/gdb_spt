@@ -2,14 +2,14 @@ NXP Software Content Register
 
 Release Name: S32 GDB Client for SPT3
 
-Outgoing License:           GNU General Public License v2.0 or later
+Outgoing License:           GNU General Public License v3.0 or later
 
 Binutils GDB                Description: Binutils GDB
                             Version: 7.12.1
                             Home Page: https://www.gnu.org/software/binutils/
-                            License: GNU General Public License v2.0 or later
+                            License: GNU General Public License v3.0 or later
                             Format: binary
-                            Location: gdb-7.12-spt3 
+                            Location: gdb-7.12-spt3
 
 GDB Client for SPT          Description: Files under GPLv3 license from NXP GDB Client for SPT3
                             Version: Unspecified
