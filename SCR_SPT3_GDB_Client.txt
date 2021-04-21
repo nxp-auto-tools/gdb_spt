@@ -11,7 +11,14 @@ Binutils GDB                Description: Binutils GDB
                             Format: binary
                             Location: gdb-7.12-spt3 
 
-GDB Client for SPT          Description: GDB Client for SPT3
+GDB Client for SPT          Description: Files under GPLv3 license from NXP GDB Client for SPT3
+                            Version: Unspecified
+                            Home Page: None
+                            License: GNU General Public License v3.0 or later
+                            Format: binary
+                            Location: gdb-7.12-spt3
+
+GDB Client for SPT          Description: Files under BSD license from NXP GDB Client for SPT3
                             Version: Unspecified
                             Home Page: https://source.codeaurora.org/external/s32ds/gdb/spt/
                             License: BSD 3-clause "New" or "Revised" License
