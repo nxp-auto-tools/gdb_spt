@@ -1,5 +1,5 @@
 /* Copyright (C) 1992-2021 Free Software Foundation, Inc.
-   Contributed by NXP, SPT support.
+   Contributed by NXP, APEX support.
 
    This file is part of BFD, the Binary File Descriptor library.
 
