@@ -1,4 +1,4 @@
-/* Copyright (C) 1992-2021 Free Software Foundation, Inc.
+/* Copyright (C) 2018-2021 Free Software Foundation, Inc.
    Contributed by NXP, SPT support.
 
    This file is part of BFD, the Binary File Descriptor library.
