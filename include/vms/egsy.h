@@ -1,6 +1,9 @@
 /* Alpha VMS external format of Extended Global Symbol.
+
    Copyright (C) 2010-2016 Free Software Foundation, Inc.
    Written by Tristan Gingold <gingold@adacore.com>, AdaCore.
+
+   This file is part of BFD, the Binary File Descriptor library.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
