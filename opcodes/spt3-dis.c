@@ -133,7 +133,7 @@ char * getSrcAddWr(INSN_){
 }
 
 char * getSrc2Add(INSN_){
-	static char buffa[10];
+	static char buffa[15];
 	memset(buffa, 0, sizeof(buffa));
 	int bank = ((x2 & 0x30000000) >> 28);
 	int slice = ((x2 & 0xfff0000) >> 16);
