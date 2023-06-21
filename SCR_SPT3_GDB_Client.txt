@@ -1,28 +1,17 @@
 NXP Software Content Register
 
-Release Name: S32 GDB Client for SPT3
+Release Name: GDB Client for SPT3
 
 Outgoing License:           GNU General Public License v3.0 or later
 
-Binutils GDB                Description: Binutils GDB
-                            Version: 7.12.1
-                            Home Page: https://www.gnu.org/software/binutils/
+GDB Client for SPT3         Description: NXP GDB Client for SPT3
+                            Version: 7.12.1 (branch: devel-spt, tag: GDB_SPT3-7.12.1_B0)
+                            Home Page: https://github.com/nxp-auto-tools/gdb_spt
                             License: GNU General Public License v3.0 or later
-                            Format: binary
+                            Format: binary/source
                             Location: gdb-7.12-spt3
-
-GDB Client for SPT          Description: Files under GPLv3 license from NXP GDB Client for SPT3
-                            Version: 7.12.1
-                            Home Page: None
-                            License: GNU General Public License v3.0 or later
-                            Format: binary
-                            Location: gdb-7.12-spt3
-
-GDB Client for SPT          Description: Files under BSD license from NXP GDB Client for SPT3
-                            Version: 7.12.1
-                            Home Page: https://source.codeaurora.org/external/s32ds/gdb/spt/
-                            License: BSD 3-clause "New" or "Revised" License
-                            Format: binary
-                            Location: gdb-7.12-spt3
+                            Origin:
+                                GNU Binutils (GNU General Public License v3.0 or later) - https://www.gnu.org/software/binutils/
+                                Location: https://sourceware.org/git/binutils-gdb.git (tag: users/ARM/embedded-gdb-7.12-branch-2017q2)
 
 [end]
